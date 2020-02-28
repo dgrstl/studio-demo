@@ -255,6 +255,14 @@
           }
         }
       }
+    },
+    "/foo": {
+      "get": {
+        "summary": "get foo",
+        "tags": [],
+        "responses": {},
+        "operationId": "get-foo"
+      }
     }
   }
 }
