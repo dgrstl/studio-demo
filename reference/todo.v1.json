@@ -40,6 +40,23 @@
                 "name": "my todo's name",
                 "completed": false
               }
+            },
+            "x-examples": {
+              "example-1": {}
+            }
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/todo-partial",
+              "example": {
+                "name": "my todo's name",
+                "completed": false
+              }
+            },
+            "x-examples": {
+              "example-1": {}
             }
           }
         ],
