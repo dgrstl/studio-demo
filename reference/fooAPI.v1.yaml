@@ -1,0 +1,31 @@
+openapi: 3.0.0
+info:
+  title: fooAPI
+  version: '1.0'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /foo:
+    get:
+      summary: getfoo
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../models/customer.v1.yaml
+      operationId: get-foo
+      description: ''
+      parameters:
+        - schema:
+            type: string
+          in: header
+        - schema:
+            type: string
+          in: query
+      requestBody:
+        description: ''
+components:
+  schemas: {}

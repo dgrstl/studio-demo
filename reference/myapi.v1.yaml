@@ -17,5 +17,10 @@ paths:
               schema:
                 $ref: ../models/mymodel.v1.yaml
       operationId: get-stuff
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ''
 components:
   schemas: {}
