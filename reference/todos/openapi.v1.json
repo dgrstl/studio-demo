@@ -89,10 +89,6 @@
             "in": "body",
             "schema": {
               "$ref": "./models/todo-partial.v1.json",
-              "example": {
-                "name": "my todo's new name",
-                "completed": false
-              }
             }
           }
         ],
@@ -254,14 +250,6 @@
             "$ref": "../common/openapi.v1.yaml#/responses/500"
           }
         }
-      }
-    },
-    "/foo": {
-      "get": {
-        "summary": "get foo",
-        "tags": [],
-        "responses": {},
-        "operationId": "get-foo"
       }
     }
   }

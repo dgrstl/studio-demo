@@ -1,9 +1,7 @@
 {
   "formats": [
-    "oas2"
-  ],
-  "extends": [
-    "spectral:oas"
+    "oas2",
+    "oas3"
   ],
   "rules": {
     "info-matches-stoplight": {
@@ -24,18 +22,13 @@
   "valid-responses": {
     "description": "Operation must have both `200` and `400` responses",
     "type": "validation",
-    "given": "$.paths.*[?( @property === 'get' || @property === 'put' || @property === 'post' || @property === 'delete' || @property === 'options' || @property === 'head' || @property === 'patch' || @property === 'trace' )].responses[*]~",
+    "given": "$.paths.*[?( @property === 'get' || @property === 'put' || @property === 'post' || @property === 'delete' || @property === 'options' || @property === 'head' || @property === 'patch' || @property === 'trace' )].responses",
     "then": {
-      "function": "schema",
+      "function": "enumeration",
+      "field": "[*]~",
       "functionOptions": {
-        "schema": {
-          "type": "object",
-          "required": [
-            "200",
-            "400"
-          ]
+        "values": "200"
         }
       }
     }
   }
-}
