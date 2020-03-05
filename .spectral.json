@@ -1,0 +1,41 @@
+{
+  "formats": [
+    "oas2"
+  ],
+  "extends": [
+    "spectral:oas"
+  ],
+  "rules": {
+    "info-matches-stoplight": {
+      "description": "This is an example rule",
+      "message": "Info must contain Stoplight",
+      "given": "$.info",
+      "recommended": true,
+      "type": "style",
+      "then": {
+        "field": "title",
+        "function": "pattern",
+        "functionOptions": {
+          "match": "Stoplight"
+        }
+      }
+    }
+  },
+  "valid-responses": {
+    "description": "Operation must have both `200` and `400` responses",
+    "type": "validation",
+    "given": "$.paths.*[?( @property === 'get' || @property === 'put' || @property === 'post' || @property === 'delete' || @property === 'options' || @property === 'head' || @property === 'patch' || @property === 'trace' )].responses[*]~",
+    "then": {
+      "function": "schema",
+      "functionOptions": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "200",
+            "400"
+          ]
+        }
+      }
+    }
+  }
+}
