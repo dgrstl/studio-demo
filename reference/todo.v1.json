@@ -145,7 +145,8 @@
           "500": {
             "$ref": "./common.oas2.yml#/responses/500"
           }
-        }
+        },
+        "description": "foo\n"
       },
       "parameters": []
     },
