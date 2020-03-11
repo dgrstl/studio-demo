@@ -146,7 +146,7 @@
             "$ref": "./common.oas2.yml#/responses/500"
           }
         },
-        "description": "foo\n"
+        "description": "\n"
       },
       "parameters": []
     },
@@ -266,6 +266,15 @@
         "security": [
           {
             "apikey": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "https://sales.stoplight-dev.com/api/nodes.raw/?srn=gh/stoplightio/foundation-demo/reference/models/todos/user.v1.json&mid=58&deref=bundle"
+            }
           }
         ]
       }
