@@ -162,9 +162,6 @@
       "get": {
         "operationId": "GET_todo",
         "summary": "Get Todo",
-        "tags": [
-          "Todos"
-        ],
         "responses": {
           "200": {
             "description": "",
@@ -189,14 +186,14 @@
           "500": {
             "$ref": "./common.oas2.yml#/responses/500"
           }
-        }
+        },
+        "tags": [
+          "Find"
+        ]
       },
       "put": {
         "operationId": "PUT_todos",
         "summary": "Update Todo",
-        "tags": [
-          "Todos"
-        ],
         "parameters": [
           {
             "name": "body",
@@ -241,14 +238,14 @@
           {
             "apikey": []
           }
+        ],
+        "tags": [
+          "Change"
         ]
       },
       "delete": {
         "operationId": "DELETE_todo",
         "summary": "Delete Todo",
-        "tags": [
-          "Todos"
-        ],
         "responses": {
           "204": {
             "description": ""
@@ -260,7 +257,10 @@
             "$ref": "./common.oas2.yml#/responses/404"
           },
           "500": {
-            "$ref": "./common.oas2.yml#/responses/500"
+            "$ref": "./common.oas2.yml#/responses/500",
+            "schema": {
+              "$ref": "https://sales.stoplight-dev.com/api/nodes.raw/?srn=gh/stoplightio/foundation-demo/reference/models/todos/todo-partial.v1.json&mid=63&deref=bundle"
+            }
           }
         },
         "security": [
@@ -275,7 +275,15 @@
             "schema": {
               "$ref": "https://sales.stoplight-dev.com/api/nodes.raw/?srn=gh/stoplightio/foundation-demo/reference/models/todos/user.v1.json&mid=58&deref=bundle"
             }
+          },
+          {
+            "type": "string",
+            "in": "header"
           }
+        ],
+        "description": "",
+        "tags": [
+          "Remove"
         ]
       }
     }
