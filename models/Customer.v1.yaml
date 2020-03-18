@@ -1,0 +1,17 @@
+title: Customer
+type: object
+properties:
+  id:
+    type: string
+  firstName:
+    type: string
+  LastName:
+    type: string
+  City:
+    type: string
+  State:
+    type: string
+  Zip:
+    type: number
+  '':
+    $ref: 'https://sales.stoplight-dev.com/api/nodes.raw/?srn=gh/stoplightio/foundation-demo/reference/models/zookeeper+petstore/error.v1.yaml&mid=59&deref=bundle'

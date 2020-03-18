@@ -1,0 +1,48 @@
+openapi: 3.0.0
+info:
+  title: CustomerAPI
+  version: '1.0'
+  contact:
+    name: Dave Roberts
+    url: 'https://stoplight.io'
+    email: dr@stoplight.io
+  license:
+    name: MIT
+  description: My description
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /customers:
+    get:
+      summary: Get customers
+      tags:
+        - Endpoints
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../models/Customer.v1.yaml
+      operationId: get-customers
+      description: customers endpoint
+      requestBody: {}
+    post:
+      summary: ''
+      operationId: post-customers
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: 'https://sales.stoplight-dev.com/api/nodes.raw/?srn=gh/stoplightio/foundation-demo/reference/models/zookeeper+petstore/error.v1.yaml&mid=59&deref=bundle'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../models/Customer.v1.yaml
+components:
+  schemas: {}
