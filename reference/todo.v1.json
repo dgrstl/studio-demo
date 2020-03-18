@@ -221,6 +221,14 @@
                 "completed_at": null,
                 "created_at": "2014-08-28T14:14:28.494Z",
                 "updated_at": "2015-08-28T14:14:28.494Z"
+              },
+              "foo": {
+                "id": 9000,
+                "name": "It's Over 9000!!!",
+                "completed": true,
+                "completed_at": null,
+                "created_at": "2014-08-28T14:14:28.494Z",
+                "updated_at": "2015-08-28T14:14:28.494Z"
               }
             }
           },

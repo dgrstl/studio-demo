@@ -13,5 +13,7 @@ properties:
     type: string
   Zip:
     type: number
+  foo:
+    $ref: './MyModel.v1.json#/definitions/address'
   '':
-    $ref: 'https://sales.stoplight-dev.com/api/nodes.raw/?srn=gh/stoplightio/foundation-demo/reference/models/zookeeper+petstore/error.v1.yaml&mid=59&deref=bundle'
+    $ref: ''
