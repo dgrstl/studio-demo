@@ -44,5 +44,10 @@ paths:
           application/json:
             schema:
               $ref: ../models/Customer.v1.yaml
+            examples:
+              example-1:
+                value:
+                  code: -2147483648
+                  message: my string
 components:
   schemas: {}
