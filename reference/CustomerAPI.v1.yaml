@@ -33,6 +33,10 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: 'https://sales.stoplight-dev.com/api/nodes.raw/?srn=gh/stoplightio/foundation-demo/reference/models/todos/user.v1.json&mid=58&deref=bundle'
         '400':
           description: Bad Request
           content:
@@ -43,11 +47,16 @@ paths:
         content:
           application/json:
             schema:
-              $ref: ../models/Customer.v1.yaml
+              $ref: 'https://sales.stoplight-dev.com/api/nodes.raw/?srn=gh/stoplightio/foundation-demo/reference/models/todos/todo-full.v2.json&mid=65&deref=bundle'
             examples:
               example-1:
                 value:
                   code: -2147483648
                   message: my string
+          application/xml:
+            schema:
+              $ref: 'https://sales.stoplight-dev.com/api/nodes.raw/?srn=gh/stoplightio/foundation-demo/reference/models/todos/user.v1.json&mid=57&deref=bundle'
+      tags:
+        - /v1/api/thing
 components:
   schemas: {}

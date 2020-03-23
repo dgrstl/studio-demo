@@ -9,5 +9,15 @@ properties:
     description: A code.
   message:
     type: string
+  voo:
+    type:
+      - string
+      - array
+    format: email
+    items: {}
+  bar:
+    type: string
+  '':
+    $ref: ''
 required:
   - code
