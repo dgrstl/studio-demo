@@ -8,34 +8,10 @@ Column A | Column B | Column C
  A2 | B2 | C2
  A3 | B3 | C3
 
- 
- 
 ```json http
 {
   "method": "get",
   "url": "https://todos.stoplight.io/todos"
-}
-
-
-
-```
-
-```javascript
-$ref: /some/path/to/js-code-sample.js
-```
-
-```markdown
-$ref: /some/path/to/markdown.md
-```
-
-```json json_schema
-{
-  "type": "object",
-  "properties": {
-    "id": {
-      "type": "string"
-    }
-  }
 }
 ```
 # Introduction

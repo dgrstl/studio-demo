@@ -11,52 +11,29 @@ info:
   description: My description
 servers:
   - url: 'http://localhost:3000'
+tags: null
 paths:
   /customers:
     get:
       summary: Get customers
       tags:
-        - Endpoints
+        - endpoints
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: ../models/Customer.v1.yaml
+                $ref: 'https://sales.stoplight-dev.com/api/nodes.raw/?srn=gh/stoplightio/foundation-demo/reference/models/todos/todo-full.v2.json&mid=66&deref=bundle'
       operationId: get-customers
       description: customers endpoint
-      requestBody: {}
-    post:
-      summary: ''
-      operationId: post-customers
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: 'https://sales.stoplight-dev.com/api/nodes.raw/?srn=gh/stoplightio/foundation-demo/reference/models/todos/user.v1.json&mid=58&deref=bundle'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: 'https://sales.stoplight-dev.com/api/nodes.raw/?srn=gh/stoplightio/foundation-demo/reference/models/zookeeper+petstore/error.v1.yaml&mid=59&deref=bundle'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: 'https://sales.stoplight-dev.com/api/nodes.raw/?srn=gh/stoplightio/foundation-demo/reference/models/todos/todo-full.v2.json&mid=65&deref=bundle'
-            examples:
-              example-1:
-                value:
-                  code: -2147483648
-                  message: my string
-          application/xml:
-            schema:
-              $ref: 'https://sales.stoplight-dev.com/api/nodes.raw/?srn=gh/stoplightio/foundation-demo/reference/models/todos/user.v1.json&mid=57&deref=bundle'
-      tags:
-        - /v1/api/thing
-components:
-  schemas: {}
+              $ref: 'https://sales.stoplight-dev.com/api/nodes.raw/?srn=gh/stoplightio/foundation-demo/reference/models/todos/todo-full.v2.json&mid=67&deref=bundle'
+        description: ''
+      parameters:
+        - schema:
+            type: string
+          in: header

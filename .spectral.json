@@ -1,0 +1,33 @@
+{
+  "formats": [
+    "oas2",
+    "oas3"
+  ],
+  "extends": [
+    "spectral:oas"
+  ],
+  "rules": {
+    "valid-responses": {
+      "description": "Operation must have a `200` or `400` response code",
+      "type": "validation",
+      "given": "$.paths.*[?( @property === 'get' || @property === 'put' || @property === 'post' || @property === 'delete' || @property === 'options' || @property === 'head' || @property === 'patch' || @property === 'trace' )].responses",
+      "then": {
+        "function": "schema",
+        "functionOptions": {
+          "schema": {
+            "type": "object",
+            "required": [
+              "200",
+              "400",
+              "500"
+            ]
+          }
+        }
+      },
+      "severity": "error"
+    },
+    "example-value-or-externalValue": "off",
+    "info-contact": "info",
+    "info-description": "off"
+  }
+}

@@ -14,7 +14,7 @@
   },
   "host": "todos.stoplight.io",
   "schemes": [
-    "http"
+    "https"
   ],
   "produces": [
     "application/json"
@@ -118,7 +118,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/todo-full"
+                "$ref": "https://sales.stoplight-dev.com/api/nodes.raw/?srn=gh/stoplightio/foundation-demo/reference/models/todos/user.v1.json&mid=57&deref=bundle"
               }
             },
             "examples": {
