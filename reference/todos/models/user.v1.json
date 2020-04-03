@@ -2,7 +2,13 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "User",
   "type": "object",
+  "x-tags": [
+    "Todos"
+  ],
   "properties": {
+    "foo": {
+      "type": "string"
+    },
     "name": {
       "type": "string",
       "description": "The user's full name."
@@ -16,8 +22,5 @@
   "required": [
     "name",
     "age"
-  ],
-  "x-tags": [
-    "Todos"
   ]
 }
