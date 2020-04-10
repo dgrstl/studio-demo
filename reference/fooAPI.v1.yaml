@@ -12,19 +12,9 @@ paths:
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: ../models/customer.v1.yaml
       operationId: get-foo
       description: ''
-      parameters:
-        - schema:
-            type: string
-          in: header
-        - schema:
-            type: string
-          in: query
+      parameters: []
       requestBody:
         description: ''
 components:
