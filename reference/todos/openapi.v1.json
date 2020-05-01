@@ -46,7 +46,7 @@
           "type": "string"
         }
       ],
-      "get":{
+      "get": {
         "operationId": "GET_todo",
         "summary": "Get Todo",
         "tags": [
@@ -78,15 +78,35 @@
         },
         "description": "Get Todo"
       },
-        "security": [
-          {
-            "apikey": []
+      "security": [
+        {
+          "apikey": []
+        }
+      ],
+      "description": "Put Todo",
+      "post": {
+        "summary": "",
+        "operationId": "post-todos-todoId",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "204": {
+            "description": "No Content",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
           }
-        ],
-        "description": "Put Todo"
-      },
-
-  
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "in": "header"
+          }
+        ]
+      }
+    },
     "/todos": {
       "post": {
         "operationId": "POST_todos",
@@ -186,6 +206,21 @@
           }
         },
         "description": "Get todos"
+      }
+    },
+    "/foo": {
+      "get": {
+        "summary": "get foo",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "https://sales.stoplight-dev.com/api/nodes.raw/?srn=gh/dgrstl/temp-project/api-poc.1.0.0.yaml/components/schemas/User&mid=72&deref=bundle"
+            }
+          }
+        },
+        "operationId": "get-foo"
       }
     }
   }

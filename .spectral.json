@@ -19,6 +19,7 @@
           }
         }
       }
-    }
+    },
+    "oas2-operation-formData-consume-check": "off"
   }
 }
