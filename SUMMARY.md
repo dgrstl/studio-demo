@@ -2,6 +2,7 @@
 
 * [Joining CS](README.md)
 * [Ticket Triage](ticket-triage.md)
+* [How to use ProductBoard](how-to-use-productboard.md)
 
 ## Customers
 
