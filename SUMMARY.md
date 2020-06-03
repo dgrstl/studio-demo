@@ -15,7 +15,8 @@
 
 ## Org Planning
 
-* [Untitled](org-planning/untitled-1.md)
-* [Untitled](org-planning/untitled.md)
-* [Ongoing Projects](org-planning/ongoing-projects.md)
+* [Ongoing Projects](org-planning/ongoing-projects/README.md)
+  * [Customer Health](org-planning/ongoing-projects/untitled-1.md)
+  * [Inter-departmental Interfaces](org-planning/ongoing-projects/inter-departmental-interfaces.md)
+* [Tactical Todos](org-planning/untitled.md)
 
