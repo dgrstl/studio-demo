@@ -1,8 +1,8 @@
 # Table of contents
 
 * [Joining CS](README.md)
-* [Ticket Triage](ticket-triage.md)
-* [How to use ProductBoard](how-to-use-productboard.md)
+* [Ticket Triage](ticket-triage/README.md)
+  * [Handling Feature Requests](ticket-triage/how-to-use-productboard.md)
 
 ## Customers
 
