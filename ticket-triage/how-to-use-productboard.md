@@ -6,9 +6,11 @@ If a user has requested a feature or enhancement, select **Feature Request** fro
 
 ![](../.gitbook/assets/image.png)
 
+This can be selected in combination with other categories, so be sure to click other categories that apply.
+
 ## Flagging Tickets as Needing Feedback from Product
 
-From the Zendesk Agent interface, a ticket needs to be tagged as:
+From the Zendesk Agent interface, a ticket needs to be tagged as **both**:
 
 * Feature Request
 * Needs follow-up from Product Team
