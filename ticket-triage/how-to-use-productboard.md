@@ -25,3 +25,13 @@ ProductBoard is a tool used by the Product team to plan and catalog upcoming pro
 
 > If you do not have access to ProductBoard, please ask for access in the \#dept-product Slack channel.
 
+### Commenting on Insights
+
+Insights can be commented and user's can be notified by using the text-box at the bottom:
+
+![](../.gitbook/assets/image%20%281%29.png)
+
+### Finding a Previous Insight
+
+It's hard. We need a better solution.
+
