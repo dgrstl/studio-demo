@@ -1,4 +1,4 @@
-# Joining CS
+# Overview
 
-Your first day joining the CS team...
+## What is Customer Success?
 

@@ -1,6 +1,6 @@
 # Table of contents
 
-* [Joining CS](README.md)
+* [Overview](README.md)
 * [Ticket Triage](ticket-triage/README.md)
   * [Handling Feature Requests](ticket-triage/how-to-use-productboard.md)
 

@@ -15,7 +15,7 @@ Before opening an issue with Engineering:
   * Ask for any relevant actions that reproduces the error \(clicking X, adding Y model, etc\). _Be sure to include these items in the issue._
   * Ask if refreshing resolves the issue \(could be related to [this](https://github.com/stoplightio/platform-internal/issues/2301) issue\).
 
-## Creating Issues
+## Creating Github Issues
 
 Issues should always be logged in the [platform-internal](https://github.com/stoplightio/platform-internal/issues) repository. Also:
 
