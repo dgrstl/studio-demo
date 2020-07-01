@@ -201,6 +201,41 @@
               ]
             }
           },
+          "201": {
+            "description": "Created",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
           "500": {
             "$ref": "../common/openapi.v1.yaml#/responses/500"
           }
