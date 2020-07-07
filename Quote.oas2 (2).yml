@@ -1,0 +1,4347 @@
+swagger: '2.0'
+info:
+  title: Quotes
+  version: '1.3'
+  description: 'This specification defines the structure of a Quote Document API which includes Configuration Results data such as BoM, Characteristics, Technical specification, Document links, cost, price and margin.'
+  contact:
+    name: Dorian Dinh
+    email: dorian.dinh@se.com
+    url: 'https://ids.se.com/home?profileId=74083'
+host: api.qa.se.com
+paths:
+  /quotes:
+    post:
+      responses:
+        '201':
+          description: ''
+          schema:
+            type: object
+            properties:
+              quoteIdentity:
+                $ref: '#/definitions/quoteInfo'
+              quotingSystem:
+                type: string
+                description: name of the backend quotation system
+                example: QDO
+              message:
+                type: string
+                description: A message sent back by the quoting system once the service is performed.
+                example: save
+              callbackUrl:
+                $ref: '#/definitions/quoteItem/properties/documents/items'
+              salesOrganization:
+                type: string
+                description: Related sales organization of the quote. Might be determined by the quotation system.
+                example: PRHAU01
+          examples:
+            application/json:
+              quoteIdentity:
+                quoteId: 1234b563w43253246sfqgdst2326w6qw74sdgfewqt
+                quoteVersion: '3'
+                quoteNumber: 2020-6807
+                quoteStatus: 'Pending, Approved'
+                quoteTotalAmount: '123123.9999'
+                quoteExpirationDate: '2020-04-30T08:44:00.000Z'
+                quoteCreatedDate: '2020-04-30T08:44:00.000Z'
+                quoteDescription: quote for highway bridge project
+                quoteCreatedBy: Sukumar Saragadam
+                quoteCurrencyCode: 'EUR, USD'
+                quoteCacheId: O1I2U3OI12U3
+              quotingSystem: QDO
+              message: save
+              callbackUrl: {}
+              salesOrganization: PRHAU01
+        '400':
+          description: 'Request is invalid and cannot be processed due one or more issues such as syntax errors, missing required fields, out of range values, conflicting query parameters, or unknown URI.'
+          schema:
+            type: object
+            title: Error Response - OAS2
+            description: Error response returned to the consumer when an HTTP error status has occurred.
+            properties:
+              code:
+                type: string
+                example: MISSING_FIELD or 12345
+                description: |-
+                  Service-defined error code which may be numeric or a string.
+
+                  Errors detected by the APIM platform result in the following codes.
+
+                  BAD_REQUEST (for 400)
+                  UNAUTHORIZED (for 401)
+                  FORBIDDEN (for 403)
+                  NOT_FOUND (for 404)
+                  GONE (for 410)
+                  PRECONDITION_FAILED (for 412)
+                  TOO_MANY_REQUESTS (for 429)
+                  INTERNAL_SERVER_ERROR (for 500)
+                  NOT_IMPLEMENTED (for 501)
+
+                  Any specific service validation errors would replace BAD_REQUEST.
+              userMessage:
+                type: string
+                example: 'Required field is missing: productSku'
+                description: Human-readable description of the error with hints about how to fix it.
+              developerMessage:
+                type: string
+                description: 'Optional human-readable description of the error, meaningful to a developer.'
+                example: 'Product master API ParseException: required tag <sku> expected'
+              moreInfo:
+                type: string
+                description: 'Optional link to error documentation, which has more information about the error.'
+                format: uri
+                example: 'https://example.com/product-master/v1/error/12345'
+            required:
+              - code
+              - userMessage
+        '401':
+          description: 'The client is not authorized to perform this request because its identity has not yet been established, or the token is invalid or has expired.'
+          schema:
+            $ref: '#/paths/~1quotes/post/responses/400/schema'
+        '403':
+          description: The client does not have permission to perform the requested action e.g. POST or DELETE.
+          schema:
+            $ref: '#/paths/~1quotes/post/responses/400/schema'
+        '404':
+          description: Requested resource does not exist on the server. It is assumed that the URI is valid for this type of resource.
+          schema:
+            $ref: '#/paths/~1quotes/post/responses/400/schema'
+        '429':
+          description: "Number of requests has exceeded the client's rate limits."
+          schema:
+            $ref: '#/paths/~1quotes/post/responses/400/schema'
+        '500':
+          description: Requested operation encountered an unexpected server error.
+          schema:
+            $ref: '#/paths/~1quotes/post/responses/400/schema'
+      summary: Create a quote
+      parameters:
+        - description: |-
+            Requesting user's OAuth2 token acquired from IDMS identity system.
+
+            The API backend service uses this token to validate a user's identity and permissions.
+          in: header
+          name: X-IDMS-Authorization
+          type: string
+          required: true
+        - in: header
+          name: X-Ping-Authorization
+          type: string
+          description: |-
+            Requesting user's OAuth2 token acquired from Ping identity system.
+
+            The API backend service uses this token to validate a user's identity and permissions.
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/quoteCreation'
+          x-examples:
+            example-1:
+              header:
+                currencyCode: EUR
+                customerContact:
+                  contactName: 'Dorian Dinh '
+                  emailAddress: dorian.dinh@se.com
+                  role: Plant Manager DC Evreux
+                  account:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  phoneNumber: '0142504459'
+                  contactId: '01234676789'
+                  contactGoldenId: '01234676789'
+                soldTo:
+                  accountId: '121238981998'
+                  accountName: Technip holding benelux b.v
+                  accountGoldenId: '01234676789'
+                  countryCode: FR
+                opportunityId: OP-15643-1246a
+                shipTo:
+                  accountId: '121238981998'
+                  accountName: Technip holding benelux b.v
+                  accountGoldenId: '01234676789'
+                  countryCode: FR
+                supportRequestId: SR-123-4861
+                emailRecipients:
+                  - ad
+                  - Lorem
+                  - fugiat Excepteur
+                  - nulla occaecat
+                sendQuoteByEmail: true
+                quoteTo:
+                  accountId: '121238981998'
+                  accountName: Technip holding benelux b.v
+                  accountGoldenId: '01234676789'
+                  countryCode: FR
+                shipToAddress:
+                  street: Rue Letort
+                  country: FR
+                  language: en
+                  businessName: Blablabla
+                  additionalLine: '5ième Etage, Bâtiment BC'
+                  city: Paris
+                  state: Ile de France
+                  zipcode: '75018'
+                  addressLine1: 33 Lane 1
+                  addressLine2: 'Street #23, Nicolas Way'
+                caseId: 012001021QLKJSLDKJ
+                projectName: French Railway
+                projectType: 'for norway : '
+                salesOrganization: PRHAU01
+                orderNumber: '0227896123'
+                poNumber: PO-SE-4827
+                customerComment: Blablabla
+                additionalComment: Blablabla
+                billToAddress:
+                  street: Rue Letort
+                  country: FR
+                  language: en
+                  businessName: Blablabla
+                  additionalLine: '5ième Etage, Bâtiment BC'
+                  city: Paris
+                  state: Ile de France
+                  zipcode: '75018'
+                  addressLine1: 33 Lane 1
+                  addressLine2: 'Street #23, Nicolas Way'
+              country: AU
+              businessUnit: B_ECOTRA
+              quotationSystem: QDO
+              quoteItems:
+                - parentId: 1234A1
+                  lineItemId: 128218QLKS
+                  product:
+                    commercialReference: EXE172006B1B or GCR_SM6_12kv
+                    configurable: 'false'
+                    description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                    margin: 4
+                    characteristics:
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                    productFamily: RM6 switchboard
+                    unitOfMeasure: MR (for Meter)
+                    cost:
+                      currency: Sf
+                      value: 6326141u6781353
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    price:
+                      currency: yy
+                      value: '56167850'
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    range: Uniflair Chilled Water
+                    deviceType: Cooling Solutions - Chillers and Heat Rejection
+                    brand: APC
+                  qty: 5
+                  specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                  documents: []
+                  opportunityLineId: OL-19009033
+                  shipTo:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  quoteChildItems:
+                    - {}
+                    - {}
+                    - {}
+                    - {}
+                  lineItemName: Accessories
+                  lineItemType: 'group, accessory, option, service etc... '
+                  extendedNetPrice: '12321231.9999'
+                  adjustedNetPrice: '12321231.9999'
+                - parentId: 1234A1
+                  lineItemId: 128218QLKS
+                  product:
+                    commercialReference: EXE172006B1B or GCR_SM6_12kv
+                    configurable: 'false'
+                    description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                    margin: 4
+                    characteristics:
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                    productFamily: RM6 switchboard
+                    unitOfMeasure: MR (for Meter)
+                    cost:
+                      currency: yT
+                      value: '38692289'
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    price:
+                      currency: fb
+                      value: '171233617'
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    range: Uniflair Chilled Water
+                    deviceType: Cooling Solutions - Chillers and Heat Rejection
+                    brand: APC
+                  qty: 5
+                  specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                  documents: []
+                  opportunityLineId: OL-19009033
+                  shipTo:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  quoteChildItems:
+                    - {}
+                    - {}
+                    - {}
+                  lineItemName: Accessories
+                  lineItemType: 'group, accessory, option, service etc... '
+                  extendedNetPrice: '12321231.9999'
+                  adjustedNetPrice: '12321231.9999'
+              documents: []
+              quoteOwner: SESA506864
+              systemOpportunityId: 006g000000JJ7F5AAL
+              systemQuoteLinkId: a0U0U000004izz3UAA
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/quoteCreation'
+          x-examples:
+            example-1: {}
+      operationId: createQuote
+      description: |-
+        Operation to create a quote document /header including quote lines, price, cost, margin, selection and configuration.
+
+        Synchronous call.
+      tags:
+        - quote
+        - quotation
+        - tendering
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      security:
+        - oauth2: []
+  '/{quote-id}/configurations':
+    post:
+      responses:
+        '201':
+          description: 'Configuration info & quote info.'
+          schema:
+            type: object
+            properties:
+              configurationInfo:
+                $ref: '#/definitions/configurationInfo'
+              quoteInfo:
+                $ref: '#/definitions/quoteInfo'
+              message:
+                type: string
+                description: A message sent back by the quoting system once the service is performed.
+                example: save
+              callbackUrl:
+                $ref: '#/definitions/quoteItem/properties/documents/items'
+              quotingSystem:
+                type: string
+                example: OracleCPQ
+                description: name of the target quotation system
+          examples:
+            application/json:
+              configurationInfo:
+                configurationId: 129830928132-QKSJKSQ-117622
+                configurationNumber: '00008'
+              quoteInfo:
+                quoteId: 1234b563w43253246sfqgdst2326w6qw74sdgfewqt
+                quoteVersion: '3'
+                quoteNumber: 2020-6807
+                quoteStatus: 'Pending, Approved'
+                quoteTotalAmount: '123123.9999'
+                quoteExpirationDate: '2020-04-30T08:44:00.000Z'
+                quoteCreatedDate: '2020-04-30T08:44:00.000Z'
+                quoteDescription: quote for highway bridge project
+                quoteCreatedBy: Sukumar Saragadam
+                quoteCurrencyCode: 'EUR, USD'
+                quoteCacheId: O1I2U3OI12U3
+              message: save
+              callbackUrl: {}
+              quotingSystem: OracleCPQ
+        '204':
+          description: Request to DELETE a resource has been successful.
+        '400':
+          $ref: '#/paths/~1quotes/post/responses/400'
+        '401':
+          $ref: '#/paths/~1quotes/post/responses/401'
+        '403':
+          $ref: '#/paths/~1quotes/post/responses/403'
+        '404':
+          $ref: '#/paths/~1quotes/post/responses/404'
+        '429':
+          $ref: '#/paths/~1quotes/post/responses/429'
+        '500':
+          $ref: '#/paths/~1quotes/post/responses/500'
+      summary: Add a configuration to a quote
+      parameters:
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/quoteContribution'
+          x-examples:
+            application/json:
+              quoteItems:
+                - parentId: 1234A1
+                  lineItemId: 128218QLKS
+                  product:
+                    commercialReference: EXE172006B1B or GCR_SM6_12kv
+                    configurable: 'false'
+                    description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                    margin: 4
+                    characteristics:
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                    productFamily: RM6 switchboard
+                    unitOfMeasure: MR (for Meter)
+                    cost:
+                      currency: xt
+                      value: '11795684832'
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    price:
+                      currency: tQ
+                      value: 63Y249
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    range: Uniflair Chilled Water
+                    deviceType: Cooling Solutions - Chillers and Heat Rejection
+                    brand: APC
+                  qty: 5
+                  specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                  documents: []
+                  opportunityLineId: OL-19009033
+                  shipTo:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  quoteChildItems:
+                    - {}
+                  lineItemName: Accessories
+                  lineItemType: 'group, accessory, option, service etc... '
+                  extendedNetPrice: '12321231.9999'
+                  adjustedNetPrice: '12321231.9999'
+                - parentId: 1234A1
+                  lineItemId: 128218QLKS
+                  product:
+                    commercialReference: EXE172006B1B or GCR_SM6_12kv
+                    configurable: 'false'
+                    description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                    margin: 4
+                    characteristics:
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                    productFamily: RM6 switchboard
+                    unitOfMeasure: MR (for Meter)
+                    cost:
+                      currency: PY
+                      value: '442463557228510'
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    price:
+                      currency: zU
+                      value: j353412
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    range: Uniflair Chilled Water
+                    deviceType: Cooling Solutions - Chillers and Heat Rejection
+                    brand: APC
+                  qty: 5
+                  specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                  documents: []
+                  opportunityLineId: OL-19009033
+                  shipTo:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  quoteChildItems:
+                    - {}
+                    - {}
+                    - {}
+                  lineItemName: Accessories
+                  lineItemType: 'group, accessory, option, service etc... '
+                  extendedNetPrice: '12321231.9999'
+                  adjustedNetPrice: '12321231.9999'
+                - parentId: 1234A1
+                  lineItemId: 128218QLKS
+                  product:
+                    commercialReference: EXE172006B1B or GCR_SM6_12kv
+                    configurable: 'false'
+                    description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                    margin: 4
+                    characteristics:
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                    productFamily: RM6 switchboard
+                    unitOfMeasure: MR (for Meter)
+                    cost:
+                      currency: Xi
+                      value: 1D6876
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    price:
+                      currency: Lw
+                      value: 630869(61312191815
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    range: Uniflair Chilled Water
+                    deviceType: Cooling Solutions - Chillers and Heat Rejection
+                    brand: APC
+                  qty: 5
+                  specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                  documents: []
+                  opportunityLineId: OL-19009033
+                  shipTo:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  quoteChildItems:
+                    - {}
+                    - {}
+                    - {}
+                    - {}
+                    - {}
+                  lineItemName: Accessories
+                  lineItemType: 'group, accessory, option, service etc... '
+                  extendedNetPrice: '12321231.9999'
+                  adjustedNetPrice: '12321231.9999'
+                - parentId: 1234A1
+                  lineItemId: 128218QLKS
+                  product:
+                    commercialReference: EXE172006B1B or GCR_SM6_12kv
+                    configurable: 'false'
+                    description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                    margin: 4
+                    characteristics:
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                    productFamily: RM6 switchboard
+                    unitOfMeasure: MR (for Meter)
+                    cost:
+                      currency: oV
+                      value: '26'
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    price:
+                      currency: yz
+                      value: n9
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    range: Uniflair Chilled Water
+                    deviceType: Cooling Solutions - Chillers and Heat Rejection
+                    brand: APC
+                  qty: 5
+                  specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                  documents: []
+                  opportunityLineId: OL-19009033
+                  shipTo:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  quoteChildItems:
+                    - {}
+                    - {}
+                    - {}
+                    - {}
+                  lineItemName: Accessories
+                  lineItemType: 'group, accessory, option, service etc... '
+                  extendedNetPrice: '12321231.9999'
+                  adjustedNetPrice: '12321231.9999'
+              sourceInfo:
+                sourceSystemName: PowerbuildContractor
+                sourceConfigurationId: QQ32145AF3467SY76545
+                sourceConfigurationName: Project SM6
+              targetInfo:
+                quotationSystem: OracleCPQ
+                properties:
+                  - key: invocationId
+                    value: '4129359'
+                  - key: invocationId
+                    value: '4129359'
+                  - key: invocationId
+                    value: '4129359'
+                  - key: invocationId
+                    value: '4129359'
+                  - key: invocationId
+                    value: '4129359'
+              documents: []
+        - in: header
+          name: X-IDMS-Authorization
+          type: string
+          description: |-
+            Requesting user's OAuth2 token acquired from IDMS identity system.
+
+            The API backend service uses this token to validate a user's identity and permissions.
+        - in: header
+          name: X-Ping-Authorization
+          type: string
+          description: |-
+            Requesting user's OAuth2 token acquired from Ping identity system.
+
+            The API backend service uses this token to validate a user's identity and permissions.
+        - in: path
+          name: quote-id
+          type: string
+          required: true
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      description: 'Operation to add a configuration in a quote system. For instance, when a configurator system contributes to an existing quote.'
+      operationId: add.configuration
+      tags:
+        - quote
+      security:
+        - oauth2: []
+  '/{quote-id}/configurations/{configuration-id}':
+    put:
+      responses:
+        '201':
+          description: 'Configuration information & quotation information.'
+          schema:
+            type: object
+            properties:
+              configurationInfo:
+                $ref: '#/definitions/configurationInfo'
+              quoteInfo:
+                $ref: '#/definitions/quoteInfo'
+              message:
+                type: string
+                description: A message sent back by the quoting system once the service is performed.
+                example: save
+              callbackUrl:
+                $ref: '#/definitions/quoteItem/properties/documents/items'
+              quoteSystem:
+                type: string
+                example: OracleCPQ
+                description: name of the backend quotation system
+          examples:
+            application/json:
+              configurationInfo:
+                configurationId: 129830928132-QKSJKSQ-117622
+                configurationNumber: '00008'
+              quoteInfo:
+                quoteId: 1234b563w43253246sfqgdst2326w6qw74sdgfewqt
+                quoteVersion: '3'
+                quoteNumber: 2020-6807
+                quoteStatus: 'Pending, Approved'
+                quoteTotalAmount: '123123.9999'
+                quoteExpirationDate: '2020-04-30T08:44:00.000Z'
+                quoteCreatedDate: '2020-04-30T08:44:00.000Z'
+                quoteDescription: quote for highway bridge project
+                quoteCreatedBy: Sukumar Saragadam
+                quoteCurrencyCode: 'EUR, USD'
+                quoteCacheId: O1I2U3OI12U3
+              message: save
+              callbackUrl: {}
+              quoteSystem: OracleCPQ
+        '204':
+          $ref: '#/paths/~1%7Bquote-id%7D~1configurations/post/responses/204'
+        '400':
+          $ref: '#/paths/~1quotes/post/responses/400'
+        '401':
+          $ref: '#/paths/~1quotes/post/responses/401'
+        '403':
+          $ref: '#/paths/~1quotes/post/responses/403'
+        '404':
+          $ref: '#/paths/~1quotes/post/responses/404'
+        '429':
+          $ref: '#/paths/~1quotes/post/responses/429'
+        '500':
+          $ref: '#/paths/~1quotes/post/responses/500'
+      summary: Replace configuration
+      description: 'Replace a configuration (which is a hierarchy of a quote lines) in the target quote '
+      operationId: replace.configuration
+      tags:
+        - quote
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: configuration-id
+          type: string
+          required: true
+        - in: path
+          name: quote-id
+          type: string
+          required: true
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/quoteContribution'
+          x-examples:
+            application/json:
+              quoteItems:
+                - parentId: 1234A1
+                  lineItemId: 128218QLKS
+                  product:
+                    commercialReference: EXE172006B1B or GCR_SM6_12kv
+                    configurable: 'false'
+                    description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                    margin: 4
+                    characteristics:
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                    productFamily: RM6 switchboard
+                    unitOfMeasure: MR (for Meter)
+                    cost:
+                      currency: SH
+                      value: '15'
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    price:
+                      currency: xs
+                      value: '406!244'
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    range: Uniflair Chilled Water
+                    deviceType: Cooling Solutions - Chillers and Heat Rejection
+                    brand: APC
+                  qty: 5
+                  specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                  documents: []
+                  opportunityLineId: OL-19009033
+                  shipTo:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  quoteChildItems:
+                    - {}
+                    - {}
+                  lineItemName: Accessories
+                  lineItemType: 'group, accessory, option, service etc... '
+                  extendedNetPrice: '12321231.9999'
+                  adjustedNetPrice: '12321231.9999'
+                - parentId: 1234A1
+                  lineItemId: 128218QLKS
+                  product:
+                    commercialReference: EXE172006B1B or GCR_SM6_12kv
+                    configurable: 'false'
+                    description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                    margin: 4
+                    characteristics:
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                    productFamily: RM6 switchboard
+                    unitOfMeasure: MR (for Meter)
+                    cost:
+                      currency: os
+                      value: '8777263'
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    price:
+                      currency: pK
+                      value: '844490'
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    range: Uniflair Chilled Water
+                    deviceType: Cooling Solutions - Chillers and Heat Rejection
+                    brand: APC
+                  qty: 5
+                  specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                  documents: []
+                  opportunityLineId: OL-19009033
+                  shipTo:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  quoteChildItems:
+                    - {}
+                    - {}
+                    - {}
+                    - {}
+                    - {}
+                  lineItemName: Accessories
+                  lineItemType: 'group, accessory, option, service etc... '
+                  extendedNetPrice: '12321231.9999'
+                  adjustedNetPrice: '12321231.9999'
+                - parentId: 1234A1
+                  lineItemId: 128218QLKS
+                  product:
+                    commercialReference: EXE172006B1B or GCR_SM6_12kv
+                    configurable: 'false'
+                    description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                    margin: 4
+                    characteristics:
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                    productFamily: RM6 switchboard
+                    unitOfMeasure: MR (for Meter)
+                    cost:
+                      currency: UH
+                      value: 0046@01417362872
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    price:
+                      currency: BE
+                      value: '03'
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    range: Uniflair Chilled Water
+                    deviceType: Cooling Solutions - Chillers and Heat Rejection
+                    brand: APC
+                  qty: 5
+                  specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                  documents: []
+                  opportunityLineId: OL-19009033
+                  shipTo:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  quoteChildItems:
+                    - {}
+                  lineItemName: Accessories
+                  lineItemType: 'group, accessory, option, service etc... '
+                  extendedNetPrice: '12321231.9999'
+                  adjustedNetPrice: '12321231.9999'
+                - parentId: 1234A1
+                  lineItemId: 128218QLKS
+                  product:
+                    commercialReference: EXE172006B1B or GCR_SM6_12kv
+                    configurable: 'false'
+                    description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                    margin: 4
+                    characteristics:
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                    productFamily: RM6 switchboard
+                    unitOfMeasure: MR (for Meter)
+                    cost:
+                      currency: BC
+                      value: 651342184T89995
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    price:
+                      currency: zJ
+                      value: '94492116'
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    range: Uniflair Chilled Water
+                    deviceType: Cooling Solutions - Chillers and Heat Rejection
+                    brand: APC
+                  qty: 5
+                  specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                  documents: []
+                  opportunityLineId: OL-19009033
+                  shipTo:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  quoteChildItems:
+                    - {}
+                    - {}
+                    - {}
+                    - {}
+                    - {}
+                  lineItemName: Accessories
+                  lineItemType: 'group, accessory, option, service etc... '
+                  extendedNetPrice: '12321231.9999'
+                  adjustedNetPrice: '12321231.9999'
+              sourceInfo:
+                sourceSystemName: PowerbuildContractor
+                sourceConfigurationId: QQ32145AF3467SY76545
+                sourceConfigurationName: Project SM6
+              targetInfo:
+                quotationSystem: OracleCPQ
+                properties:
+                  - key: invocationId
+                    value: '4129359'
+                  - key: invocationId
+                    value: '4129359'
+                  - key: invocationId
+                    value: '4129359'
+              documents: []
+  '/accounts/{account-id}/quotes':
+    parameters:
+      - type: string
+        name: account-id
+        in: path
+        required: true
+    get:
+      summary: Get quotes of a given accounts
+      operationId: get-accounts-account-id-quotes
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/quoteInfo'
+          examples:
+            example-1:
+              - quoteId: 1234b563w43253246sfqgdst2326w6qw74sdgfewqt
+                quoteVersion: '3'
+                quoteNumber: 2020-6807
+                quoteStatus: 'Pending, Approved'
+                quoteTotalAmount: '123123.9999'
+                quoteExpirationDate: '2020-04-30T08:44:00.000Z'
+                quoteCreatedDate: '2020-04-30T08:44:00.000Z'
+                quoteDescription: quote for highway bridge project
+                quoteCreatedBy: Sukumar Saragadam
+                quoteCurrencyCode: 'EUR, USD'
+                quoteCacheId: O1I2U3OI12U3
+              - quoteId: 1234b563w43253246sfqgdst2326w6qw74sdgfewqt
+                quoteVersion: '3'
+                quoteNumber: 2020-6807
+                quoteStatus: 'Pending, Approved'
+                quoteTotalAmount: '123123.9999'
+                quoteExpirationDate: '2020-04-30T08:44:00.000Z'
+                quoteCreatedDate: '2020-04-30T08:44:00.000Z'
+                quoteDescription: quote for highway bridge project
+                quoteCreatedBy: Sukumar Saragadam
+                quoteCurrencyCode: 'EUR, USD'
+                quoteCacheId: O1I2U3OI12U3
+              - quoteId: 1234b563w43253246sfqgdst2326w6qw74sdgfewqt
+                quoteVersion: '3'
+                quoteNumber: 2020-6807
+                quoteStatus: 'Pending, Approved'
+                quoteTotalAmount: '123123.9999'
+                quoteExpirationDate: '2020-04-30T08:44:00.000Z'
+                quoteCreatedDate: '2020-04-30T08:44:00.000Z'
+                quoteDescription: quote for highway bridge project
+                quoteCreatedBy: Sukumar Saragadam
+                quoteCurrencyCode: 'EUR, USD'
+                quoteCacheId: O1I2U3OI12U3
+              - quoteId: 1234b563w43253246sfqgdst2326w6qw74sdgfewqt
+                quoteVersion: '3'
+                quoteNumber: 2020-6807
+                quoteStatus: 'Pending, Approved'
+                quoteTotalAmount: '123123.9999'
+                quoteExpirationDate: '2020-04-30T08:44:00.000Z'
+                quoteCreatedDate: '2020-04-30T08:44:00.000Z'
+                quoteDescription: quote for highway bridge project
+                quoteCreatedBy: Sukumar Saragadam
+                quoteCurrencyCode: 'EUR, USD'
+                quoteCacheId: O1I2U3OI12U3
+              - quoteId: 1234b563w43253246sfqgdst2326w6qw74sdgfewqt
+                quoteVersion: '3'
+                quoteNumber: 2020-6807
+                quoteStatus: 'Pending, Approved'
+                quoteTotalAmount: '123123.9999'
+                quoteExpirationDate: '2020-04-30T08:44:00.000Z'
+                quoteCreatedDate: '2020-04-30T08:44:00.000Z'
+                quoteDescription: quote for highway bridge project
+                quoteCreatedBy: Sukumar Saragadam
+                quoteCurrencyCode: 'EUR, USD'
+                quoteCacheId: O1I2U3OI12U3
+        '204':
+          $ref: '#/paths/~1%7Bquote-id%7D~1configurations/post/responses/204'
+        '400':
+          $ref: '#/paths/~1quotes/post/responses/400'
+        '401':
+          $ref: '#/paths/~1quotes/post/responses/401'
+        '403':
+          $ref: '#/paths/~1quotes/post/responses/403'
+        '404':
+          $ref: '#/paths/~1quotes/post/responses/404'
+        '429':
+          $ref: '#/paths/~1quotes/post/responses/429'
+        '500':
+          $ref: '#/paths/~1quotes/post/responses/500'
+      description: Return the list of quotes (summary) for a given account id.
+      parameters:
+        - type: integer
+          in: query
+          name: page-size
+          description: number of entries per page
+          required: true
+          default: 20
+        - type: integer
+          in: query
+          name: page-number
+          description: offset
+          required: true
+          default: 1
+        - type: string
+          in: query
+          name: target-quotation-system
+          required: true
+          default: OracleCPQ
+      tags:
+        - quotation
+    post:
+      summary: Create empty quote
+      operationId: post-accounts-account-id-quotes
+      responses:
+        '201':
+          description: ''
+          schema:
+            type: object
+            properties:
+              quoteIdentity:
+                $ref: '#/definitions/quoteInfo'
+              quotingSystem:
+                type: string
+                description: name of the backend quotation system
+                example: QDO
+              message:
+                type: string
+                description: A message sent back by the quoting system once the service is performed.
+                example: save
+              callbackUrl:
+                $ref: '#/definitions/quoteItem/properties/documents/items'
+              salesOrganization:
+                type: string
+                description: Related sales organization of the quote. Might be determined by the quotation system.
+                example: PRHAU01
+          examples:
+            application/json:
+              quoteIdentity:
+                quoteId: 1234b563w43253246sfqgdst2326w6qw74sdgfewqt
+                quoteVersion: '3'
+                quoteNumber: 2020-6807
+                quoteStatus: 'Pending, Approved'
+                quoteTotalAmount: '123123.9999'
+                quoteExpirationDate: '2020-04-30T08:44:00.000Z'
+                quoteCreatedDate: '2020-04-30T08:44:00.000Z'
+                quoteDescription: quote for highway bridge project
+                quoteCreatedBy: Sukumar Saragadam
+                quoteCurrencyCode: 'EUR, USD'
+                quoteCacheId: O1I2U3OI12U3
+              quotingSystem: QDO
+              message: save
+              callbackUrl: {}
+              salesOrganization: PRHAU01
+        '400':
+          $ref: '#/paths/~1quotes/post/responses/400'
+        '401':
+          $ref: '#/paths/~1quotes/post/responses/401'
+        '403':
+          $ref: '#/paths/~1quotes/post/responses/403'
+        '404':
+          $ref: '#/paths/~1quotes/post/responses/404'
+        '429':
+          $ref: '#/paths/~1quotes/post/responses/429'
+        '500':
+          $ref: '#/paths/~1quotes/post/responses/500'
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              targetInfo:
+                $ref: '#/definitions/targetInfo'
+              sourceInfo:
+                $ref: '#/definitions/sourceInfo'
+          x-examples:
+            example-1:
+              targetInfo:
+                quotationSystem: OracleCPQ
+                properties:
+                  - key: invocationId
+                    value: '4129359'
+                  - key: invocationId
+                    value: '4129359'
+                  - key: invocationId
+                    value: '4129359'
+                  - key: invocationId
+                    value: '4129359'
+              sourceInfo:
+                sourceSystemName: PowerbuildContractor
+                sourceConfigurationId: QQ32145AF3467SY76545
+                sourceConfigurationName: Project SM6
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              targetInfo:
+                $ref: '#/definitions/targetInfo'
+              sourceInfo:
+                $ref: '#/definitions/sourceInfo'
+          x-examples:
+            example-1: {}
+      description: Create an empty quote for a given account
+  '/accounts/{account-id}/quotes/{quote-id}':
+    parameters:
+      - type: string
+        name: account-id
+        in: path
+        required: true
+        description: an account could have multiple quotes
+      - type: string
+        name: quote-id
+        in: path
+        required: true
+        description: quote id of the quotation system
+    get:
+      summary: Get quote details
+      operationId: get-search
+      responses:
+        '200':
+          description: OK
+          examples:
+            example-1:
+              quoteInfo:
+                quoteId: 1234b563w43253246sfqgdst2326w6qw74sdgfewqt
+                quoteVersion: '3'
+                quoteNumber: 2020-6807
+                quoteStatus: 'Pending, Approved'
+                quoteTotalAmount: '123123.9999'
+                quoteExpirationDate: '2020-04-30T08:44:00.000Z'
+                quoteCreatedDate: '2020-04-30T08:44:00.000Z'
+                quoteDescription: quote for highway bridge project
+                quoteCreatedBy: Sukumar Saragadam
+                quoteCurrencyCode: 'EUR, USD'
+                quoteCacheId: O1I2U3OI12U3
+              quoteItems:
+                - parentId: 1234A1
+                  lineItemId: 128218QLKS
+                  product:
+                    commercialReference: EXE172006B1B or GCR_SM6_12kv
+                    configurable: 'false'
+                    description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                    margin: 4
+                    characteristics:
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                    productFamily: RM6 switchboard
+                    unitOfMeasure: MR (for Meter)
+                    cost:
+                      currency: Xw
+                      value: 3X5481957252
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    price:
+                      currency: bJ
+                      value: 09q46594969841
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    range: Uniflair Chilled Water
+                    deviceType: Cooling Solutions - Chillers and Heat Rejection
+                    brand: APC
+                  qty: 5
+                  specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                  documents: []
+                  opportunityLineId: OL-19009033
+                  shipTo:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  quoteChildItems:
+                    - {}
+                    - {}
+                    - {}
+                  lineItemName: Accessories
+                  lineItemType: 'group, accessory, option, service etc... '
+                  extendedNetPrice: '12321231.9999'
+                  adjustedNetPrice: '12321231.9999'
+                - parentId: 1234A1
+                  lineItemId: 128218QLKS
+                  product:
+                    commercialReference: EXE172006B1B or GCR_SM6_12kv
+                    configurable: 'false'
+                    description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                    margin: 4
+                    characteristics:
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                    productFamily: RM6 switchboard
+                    unitOfMeasure: MR (for Meter)
+                    cost:
+                      currency: vC
+                      value: 8p181767329
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    price:
+                      currency: BW
+                      value: '2655516446:6074423'
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    range: Uniflair Chilled Water
+                    deviceType: Cooling Solutions - Chillers and Heat Rejection
+                    brand: APC
+                  qty: 5
+                  specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                  documents: []
+                  opportunityLineId: OL-19009033
+                  shipTo:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  quoteChildItems:
+                    - {}
+                    - {}
+                    - {}
+                    - {}
+                  lineItemName: Accessories
+                  lineItemType: 'group, accessory, option, service etc... '
+                  extendedNetPrice: '12321231.9999'
+                  adjustedNetPrice: '12321231.9999'
+                - parentId: 1234A1
+                  lineItemId: 128218QLKS
+                  product:
+                    commercialReference: EXE172006B1B or GCR_SM6_12kv
+                    configurable: 'false'
+                    description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                    margin: 4
+                    characteristics:
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                    productFamily: RM6 switchboard
+                    unitOfMeasure: MR (for Meter)
+                    cost:
+                      currency: zz
+                      value: 7757953k74386022823
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    price:
+                      currency: Gc
+                      value: '12}79899546'
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    range: Uniflair Chilled Water
+                    deviceType: Cooling Solutions - Chillers and Heat Rejection
+                    brand: APC
+                  qty: 5
+                  specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                  documents: []
+                  opportunityLineId: OL-19009033
+                  shipTo:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  quoteChildItems:
+                    - {}
+                  lineItemName: Accessories
+                  lineItemType: 'group, accessory, option, service etc... '
+                  extendedNetPrice: '12321231.9999'
+                  adjustedNetPrice: '12321231.9999'
+              header:
+                currencyCode: EUR
+                customerContact:
+                  contactName: 'Dorian Dinh '
+                  emailAddress: dorian.dinh@se.com
+                  role: Plant Manager DC Evreux
+                  account:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  phoneNumber: '0142504459'
+                  contactId: '01234676789'
+                  contactGoldenId: '01234676789'
+                soldTo:
+                  accountId: '121238981998'
+                  accountName: Technip holding benelux b.v
+                  accountGoldenId: '01234676789'
+                  countryCode: FR
+                opportunityId: OP-15643-1246a
+                shipTo:
+                  accountId: '121238981998'
+                  accountName: Technip holding benelux b.v
+                  accountGoldenId: '01234676789'
+                  countryCode: FR
+                supportRequestId: SR-123-4861
+                emailRecipients:
+                  - labore adipisicing aute
+                  - deserunt aute culpa fugiat
+                  - adipisicing irure exercitation in nisi
+                  - Ut fugiat do aliquip in
+                  - quis nostrud consequat
+                sendQuoteByEmail: true
+                quoteTo:
+                  accountId: '121238981998'
+                  accountName: Technip holding benelux b.v
+                  accountGoldenId: '01234676789'
+                  countryCode: FR
+                shipToAddress:
+                  street: Rue Letort
+                  country: FR
+                  language: en
+                  businessName: Blablabla
+                  additionalLine: '5ième Etage, Bâtiment BC'
+                  city: Paris
+                  state: Ile de France
+                  zipcode: '75018'
+                  addressLine1: 33 Lane 1
+                  addressLine2: 'Street #23, Nicolas Way'
+                caseId: 012001021QLKJSLDKJ
+                projectName: French Railway
+                projectType: 'for norway : '
+                salesOrganization: PRHAU01
+                orderNumber: '0227896123'
+                poNumber: PO-SE-4827
+                customerComment: Blablabla
+                additionalComment: Blablabla
+                billToAddress:
+                  street: Rue Letort
+                  country: FR
+                  language: en
+                  businessName: Blablabla
+                  additionalLine: '5ième Etage, Bâtiment BC'
+                  city: Paris
+                  state: Ile de France
+                  zipcode: '75018'
+                  addressLine1: 33 Lane 1
+                  addressLine2: 'Street #23, Nicolas Way'
+              shipToAddresses:
+                - address:
+                    street: Rue Letort
+                    country: FR
+                    language: en
+                    businessName: Blablabla
+                    additionalLine: '5ième Etage, Bâtiment BC'
+                    city: Paris
+                    state: Ile de France
+                    zipcode: '75018'
+                    addressLine1: 33 Lane 1
+                    addressLine2: 'Street #23, Nicolas Way'
+                  account:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+          schema:
+            type: object
+            properties:
+              quoteInfo:
+                $ref: '#/definitions/quoteInfo'
+              quoteItems:
+                type: array
+                items:
+                  $ref: '#/definitions/quoteItem'
+              header:
+                $ref: '#/definitions/header'
+              shipToAddresses:
+                type: array
+                description: possible shipto addresses list of a quote.
+                items:
+                  type: object
+                  properties:
+                    address:
+                      $ref: '#/definitions/address'
+                    account:
+                      $ref: '#/definitions/account'
+          headers: {}
+        '204':
+          $ref: '#/paths/~1%7Bquote-id%7D~1configurations/post/responses/204'
+        '400':
+          $ref: '#/paths/~1quotes/post/responses/400'
+        '401':
+          $ref: '#/paths/~1quotes/post/responses/401'
+        '403':
+          $ref: '#/paths/~1quotes/post/responses/403'
+        '404':
+          $ref: '#/paths/~1quotes/post/responses/404'
+        '429':
+          $ref: '#/paths/~1quotes/post/responses/429'
+        '500':
+          $ref: '#/paths/~1quotes/post/responses/500'
+      parameters:
+        - type: string
+          in: header
+          name: X-IDMS-Authorization
+          description: IDMS User context
+          required: true
+        - type: string
+          in: query
+          name: target-quotation-system
+          description: 'by default global quotation tool "oracleCPQ". Indicate the identifier of the target system if any routing logic implemented.'
+          default: OracleCPQ
+      description: Get details of a quote  for a given Quote ID and account id
+      tags:
+        - quotation
+    patch:
+      summary: partial update of a quote
+      operationId: patch-quote-id-2
+      responses:
+        '200':
+          description: OK
+          examples:
+            example-1:
+              quoteInfo:
+                quoteId: 1234b563w43253246sfqgdst2326w6qw74sdgfewqt
+                quoteVersion: '3'
+                quoteNumber: 2020-6807
+                quoteStatus: 'Pending, Approved'
+                quoteTotalAmount: '123123.9999'
+                quoteExpirationDate: '2020-04-30T08:44:00.000Z'
+                quoteCreatedDate: '2020-04-30T08:44:00.000Z'
+                quoteDescription: quote for highway bridge project
+                quoteCreatedBy: Sukumar Saragadam
+                quoteCurrencyCode: 'EUR, USD'
+                quoteCacheId: O1I2U3OI12U3
+              quoteItems:
+                - parentId: 1234A1
+                  lineItemId: 128218QLKS
+                  product:
+                    commercialReference: EXE172006B1B or GCR_SM6_12kv
+                    configurable: 'false'
+                    description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                    margin: 4
+                    characteristics:
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                    productFamily: RM6 switchboard
+                    unitOfMeasure: MR (for Meter)
+                    cost:
+                      currency: Jq
+                      value: 8K2412
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    price:
+                      currency: FU
+                      value: 38199808n504731
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    range: Uniflair Chilled Water
+                    deviceType: Cooling Solutions - Chillers and Heat Rejection
+                    brand: APC
+                  qty: 5
+                  specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                  documents: []
+                  opportunityLineId: OL-19009033
+                  shipTo:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  quoteChildItems:
+                    - {}
+                    - {}
+                    - {}
+                  lineItemName: Accessories
+                  lineItemType: 'group, accessory, option, service etc... '
+                  extendedNetPrice: '12321231.9999'
+                  adjustedNetPrice: '12321231.9999'
+                - parentId: 1234A1
+                  lineItemId: 128218QLKS
+                  product:
+                    commercialReference: EXE172006B1B or GCR_SM6_12kv
+                    configurable: 'false'
+                    description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                    margin: 4
+                    characteristics:
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                    productFamily: RM6 switchboard
+                    unitOfMeasure: MR (for Meter)
+                    cost:
+                      currency: Wz
+                      value: '508434766_91693073017'
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    price:
+                      currency: uo
+                      value: '9'
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    range: Uniflair Chilled Water
+                    deviceType: Cooling Solutions - Chillers and Heat Rejection
+                    brand: APC
+                  qty: 5
+                  specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                  documents: []
+                  opportunityLineId: OL-19009033
+                  shipTo:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  quoteChildItems:
+                    - {}
+                    - {}
+                    - {}
+                  lineItemName: Accessories
+                  lineItemType: 'group, accessory, option, service etc... '
+                  extendedNetPrice: '12321231.9999'
+                  adjustedNetPrice: '12321231.9999'
+              header:
+                currencyCode: EUR
+                customerContact:
+                  contactName: 'Dorian Dinh '
+                  emailAddress: dorian.dinh@se.com
+                  role: Plant Manager DC Evreux
+                  account:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  phoneNumber: '0142504459'
+                  contactId: '01234676789'
+                  contactGoldenId: '01234676789'
+                soldTo:
+                  accountId: '121238981998'
+                  accountName: Technip holding benelux b.v
+                  accountGoldenId: '01234676789'
+                  countryCode: FR
+                opportunityId: OP-15643-1246a
+                shipTo:
+                  accountId: '121238981998'
+                  accountName: Technip holding benelux b.v
+                  accountGoldenId: '01234676789'
+                  countryCode: FR
+                supportRequestId: SR-123-4861
+                emailRecipients:
+                  - irure
+                  - eiusmod Duis irure
+                  - velit sed voluptate
+                  - proident consectetur in reprehenderit
+                sendQuoteByEmail: true
+                quoteTo:
+                  accountId: '121238981998'
+                  accountName: Technip holding benelux b.v
+                  accountGoldenId: '01234676789'
+                  countryCode: FR
+                shipToAddress:
+                  street: Rue Letort
+                  country: FR
+                  language: en
+                  businessName: Blablabla
+                  additionalLine: '5ième Etage, Bâtiment BC'
+                  city: Paris
+                  state: Ile de France
+                  zipcode: '75018'
+                  addressLine1: 33 Lane 1
+                  addressLine2: 'Street #23, Nicolas Way'
+                caseId: 012001021QLKJSLDKJ
+                projectName: French Railway
+                projectType: 'for norway : '
+                salesOrganization: PRHAU01
+                orderNumber: '0227896123'
+                poNumber: PO-SE-4827
+                customerComment: Blablabla
+                additionalComment: Blablabla
+                billToAddress:
+                  street: Rue Letort
+                  country: FR
+                  language: en
+                  businessName: Blablabla
+                  additionalLine: '5ième Etage, Bâtiment BC'
+                  city: Paris
+                  state: Ile de France
+                  zipcode: '75018'
+                  addressLine1: 33 Lane 1
+                  addressLine2: 'Street #23, Nicolas Way'
+              shipToAddresses:
+                - address:
+                    street: Rue Letort
+                    country: FR
+                    language: en
+                    businessName: Blablabla
+                    additionalLine: '5ième Etage, Bâtiment BC'
+                    city: Paris
+                    state: Ile de France
+                    zipcode: '75018'
+                    addressLine1: 33 Lane 1
+                    addressLine2: 'Street #23, Nicolas Way'
+                  account:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                - address:
+                    street: Rue Letort
+                    country: FR
+                    language: en
+                    businessName: Blablabla
+                    additionalLine: '5ième Etage, Bâtiment BC'
+                    city: Paris
+                    state: Ile de France
+                    zipcode: '75018'
+                    addressLine1: 33 Lane 1
+                    addressLine2: 'Street #23, Nicolas Way'
+                  account:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+          schema:
+            type: object
+            properties:
+              quoteInfo:
+                $ref: '#/definitions/quoteInfo'
+              quoteItems:
+                type: array
+                items:
+                  $ref: '#/definitions/quoteItem'
+              header:
+                $ref: '#/definitions/header'
+              shipToAddresses:
+                type: array
+                description: possible shipto addresses list of a quote.
+                items:
+                  type: object
+                  properties:
+                    address:
+                      $ref: '#/definitions/address'
+                    account:
+                      $ref: '#/definitions/account'
+          headers: {}
+        '204':
+          $ref: '#/paths/~1%7Bquote-id%7D~1configurations/post/responses/204'
+        '400':
+          $ref: '#/paths/~1quotes/post/responses/400'
+        '401':
+          $ref: '#/paths/~1quotes/post/responses/401'
+        '403':
+          $ref: '#/paths/~1quotes/post/responses/403'
+        '404':
+          $ref: '#/paths/~1quotes/post/responses/404'
+        '429':
+          $ref: '#/paths/~1quotes/post/responses/429'
+        '500':
+          $ref: '#/paths/~1quotes/post/responses/500'
+      parameters:
+        - type: string
+          in: header
+          name: X-IDMS-Authorization
+          description: IDMS User context
+          required: true
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              quoteUpdate:
+                $ref: '#/definitions/quoteUpdate'
+              targetInfo:
+                $ref: '#/definitions/targetInfo'
+              sourceInfo:
+                $ref: '#/definitions/sourceInfo'
+          description: ''
+          x-examples:
+            example-1:
+              quoteUpdate:
+                header:
+                  soldTo:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  currencyCode: EUR
+                  opportunityId: OP-15643-1246a
+                  shipTo:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  supportRequestId: SR-123-4861
+                  customerContact:
+                    contactName: 'Dorian Dinh '
+                    emailAddress: dorian.dinh@se.com
+                    role: Plant Manager DC Evreux
+                    account:
+                      accountId: '121238981998'
+                      accountName: Technip holding benelux b.v
+                      accountGoldenId: '01234676789'
+                      countryCode: FR
+                    phoneNumber: '0142504459'
+                    contactId: '01234676789'
+                    contactGoldenId: '01234676789'
+                  emailRecipients:
+                    - dolore nulla consectetur eiusmod
+                    - elit do occaecat sint
+                  sendQuoteByEmail: true
+                  quoteTo:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  shipToAddress:
+                    street: Rue Letort
+                    country: FR
+                    language: en
+                    businessName: Blablabla
+                    additionalLine: '5ième Etage, Bâtiment BC'
+                    city: Paris
+                    state: Ile de France
+                    zipcode: '75018'
+                    addressLine1: 33 Lane 1
+                    addressLine2: 'Street #23, Nicolas Way'
+                  caseId: 012001021QLKJSLDKJ
+                  projectName: French Railway
+                  projectType: 'for norway : '
+                  salesOrganization: PRHAU01
+                  orderNumber: '0227896123'
+                  poNumber: PO-SE-4827
+                  customerComment: 'Please, grant additional 10% discount'
+                  additionalComment: This is for government project/education.
+                  quoteDescription: My Quote BLABLABLA
+                quoteItems:
+                  - actionCode: delete
+                    parentId: 1234A1
+                    lineItemId: 128218QLKS
+                    product:
+                      commercialReference: EXE172006B1B or GCR_SM6_12kv
+                      configurable: 'false'
+                      description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                      margin: 4
+                      characteristics:
+                        - name: TC_REF_BOM_ITEM_0001
+                          value: QO120B
+                        - name: TC_REF_BOM_ITEM_0001
+                          value: QO120B
+                        - name: TC_REF_BOM_ITEM_0001
+                          value: QO120B
+                        - name: TC_REF_BOM_ITEM_0001
+                          value: QO120B
+                      productFamily: RM6 switchboard
+                      unitOfMeasure: MR (for Meter)
+                      cost:
+                        currency: CV
+                        value: '4661145'
+                        display: $45.21
+                        amountType: Manufacturing Cost
+                      price:
+                        currency: zg
+                        value: '4789149'
+                        display: $45.21
+                        amountType: Manufacturing Cost
+                      range: Uniflair Chilled Water
+                      deviceType: Cooling Solutions - Chillers and Heat Rejection
+                      brand: APC
+                    qty: 5
+                    specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                    documents: []
+                    opportunityLineId: enim ipsum elit
+                    shipTo:
+                      accountId: '121238981998'
+                      accountName: Technip holding benelux b.v
+                      accountGoldenId: '01234676789'
+                      countryCode: FR
+                    quoteChildItems:
+                      - parentId: 1234A1
+                        lineItemId: 128218QLKS
+                        product:
+                          commercialReference: EXE172006B1B or GCR_SM6_12kv
+                          configurable: 'false'
+                          description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                          margin: 4
+                          characteristics:
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                          productFamily: RM6 switchboard
+                          unitOfMeasure: MR (for Meter)
+                          cost:
+                            currency: Nh
+                            value: '2476|26088513'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          price:
+                            currency: iC
+                            value: 22719324j6
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          range: Uniflair Chilled Water
+                          deviceType: Cooling Solutions - Chillers and Heat Rejection
+                          brand: APC
+                        qty: 5
+                        specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                        documents: []
+                        opportunityLineId: OL-19009033
+                        shipTo:
+                          accountId: '121238981998'
+                          accountName: Technip holding benelux b.v
+                          accountGoldenId: '01234676789'
+                          countryCode: FR
+                        quoteChildItems:
+                          - {}
+                        lineItemName: Accessories
+                        lineItemType: 'group, accessory, option, service etc... '
+                        extendedNetPrice: '12321231.9999'
+                        adjustedNetPrice: '12321231.9999'
+                      - parentId: 1234A1
+                        lineItemId: 128218QLKS
+                        product:
+                          commercialReference: EXE172006B1B or GCR_SM6_12kv
+                          configurable: 'false'
+                          description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                          margin: 4
+                          characteristics:
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                          productFamily: RM6 switchboard
+                          unitOfMeasure: MR (for Meter)
+                          cost:
+                            currency: mT
+                            value: '18508027374632'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          price:
+                            currency: Fz
+                            value: 417p8221276
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          range: Uniflair Chilled Water
+                          deviceType: Cooling Solutions - Chillers and Heat Rejection
+                          brand: APC
+                        qty: 5
+                        specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                        documents: []
+                        opportunityLineId: OL-19009033
+                        shipTo:
+                          accountId: '121238981998'
+                          accountName: Technip holding benelux b.v
+                          accountGoldenId: '01234676789'
+                          countryCode: FR
+                        quoteChildItems:
+                          - {}
+                          - {}
+                          - {}
+                        lineItemName: Accessories
+                        lineItemType: 'group, accessory, option, service etc... '
+                        extendedNetPrice: '12321231.9999'
+                        adjustedNetPrice: '12321231.9999'
+                      - parentId: 1234A1
+                        lineItemId: 128218QLKS
+                        product:
+                          commercialReference: EXE172006B1B or GCR_SM6_12kv
+                          configurable: 'false'
+                          description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                          margin: 4
+                          characteristics:
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                          productFamily: RM6 switchboard
+                          unitOfMeasure: MR (for Meter)
+                          cost:
+                            currency: de
+                            value: '0385149677'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          price:
+                            currency: Bg
+                            value: ''
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          range: Uniflair Chilled Water
+                          deviceType: Cooling Solutions - Chillers and Heat Rejection
+                          brand: APC
+                        qty: 5
+                        specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                        documents: []
+                        opportunityLineId: OL-19009033
+                        shipTo:
+                          accountId: '121238981998'
+                          accountName: Technip holding benelux b.v
+                          accountGoldenId: '01234676789'
+                          countryCode: FR
+                        quoteChildItems:
+                          - {}
+                          - {}
+                          - {}
+                          - {}
+                          - {}
+                        lineItemName: Accessories
+                        lineItemType: 'group, accessory, option, service etc... '
+                        extendedNetPrice: '12321231.9999'
+                        adjustedNetPrice: '12321231.9999'
+                      - parentId: 1234A1
+                        lineItemId: 128218QLKS
+                        product:
+                          commercialReference: EXE172006B1B or GCR_SM6_12kv
+                          configurable: 'false'
+                          description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                          margin: 4
+                          characteristics:
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                          productFamily: RM6 switchboard
+                          unitOfMeasure: MR (for Meter)
+                          cost:
+                            currency: xi
+                            value: "08\\7790"
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          price:
+                            currency: Yb
+                            value: '02701'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          range: Uniflair Chilled Water
+                          deviceType: Cooling Solutions - Chillers and Heat Rejection
+                          brand: APC
+                        qty: 5
+                        specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                        documents: []
+                        opportunityLineId: OL-19009033
+                        shipTo:
+                          accountId: '121238981998'
+                          accountName: Technip holding benelux b.v
+                          accountGoldenId: '01234676789'
+                          countryCode: FR
+                        quoteChildItems:
+                          - {}
+                        lineItemName: Accessories
+                        lineItemType: 'group, accessory, option, service etc... '
+                        extendedNetPrice: '12321231.9999'
+                        adjustedNetPrice: '12321231.9999'
+                      - parentId: 1234A1
+                        lineItemId: 128218QLKS
+                        product:
+                          commercialReference: EXE172006B1B or GCR_SM6_12kv
+                          configurable: 'false'
+                          description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                          margin: 4
+                          characteristics:
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                          productFamily: RM6 switchboard
+                          unitOfMeasure: MR (for Meter)
+                          cost:
+                            currency: HK
+                            value: '4815276099'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          price:
+                            currency: iY
+                            value: 6545047h23903
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          range: Uniflair Chilled Water
+                          deviceType: Cooling Solutions - Chillers and Heat Rejection
+                          brand: APC
+                        qty: 5
+                        specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                        documents: []
+                        opportunityLineId: OL-19009033
+                        shipTo:
+                          accountId: '121238981998'
+                          accountName: Technip holding benelux b.v
+                          accountGoldenId: '01234676789'
+                          countryCode: FR
+                        quoteChildItems:
+                          - {}
+                          - {}
+                        lineItemName: Accessories
+                        lineItemType: 'group, accessory, option, service etc... '
+                        extendedNetPrice: '12321231.9999'
+                        adjustedNetPrice: '12321231.9999'
+                    lineItemName: Accessories
+                    lineItemType: 'group, accessory, option, service etc... '
+                    extendedNetPrice: dolor veniam consectetur laborum est
+                    adjustedNetPrice: laboris sunt
+                  - actionCode: delete
+                    parentId: 1234A1
+                    lineItemId: 128218QLKS
+                    product:
+                      commercialReference: EXE172006B1B or GCR_SM6_12kv
+                      configurable: 'false'
+                      description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                      margin: 4
+                      characteristics:
+                        - name: TC_REF_BOM_ITEM_0001
+                          value: QO120B
+                        - name: TC_REF_BOM_ITEM_0001
+                          value: QO120B
+                        - name: TC_REF_BOM_ITEM_0001
+                          value: QO120B
+                        - name: TC_REF_BOM_ITEM_0001
+                          value: QO120B
+                      productFamily: RM6 switchboard
+                      unitOfMeasure: MR (for Meter)
+                      cost:
+                        currency: Qk
+                        value: 9Q2283090223
+                        display: $45.21
+                        amountType: Manufacturing Cost
+                      price:
+                        currency: fr
+                        value: 22228d10165327
+                        display: $45.21
+                        amountType: Manufacturing Cost
+                      range: Uniflair Chilled Water
+                      deviceType: Cooling Solutions - Chillers and Heat Rejection
+                      brand: APC
+                    qty: 5
+                    specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                    documents: []
+                    opportunityLineId: dolor nisi id ullamco velit
+                    shipTo:
+                      accountId: '121238981998'
+                      accountName: Technip holding benelux b.v
+                      accountGoldenId: '01234676789'
+                      countryCode: FR
+                    quoteChildItems:
+                      - parentId: 1234A1
+                        lineItemId: 128218QLKS
+                        product:
+                          commercialReference: EXE172006B1B or GCR_SM6_12kv
+                          configurable: 'false'
+                          description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                          margin: 4
+                          characteristics:
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                          productFamily: RM6 switchboard
+                          unitOfMeasure: MR (for Meter)
+                          cost:
+                            currency: RG
+                            value: '3'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          price:
+                            currency: EA
+                            value: ''
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          range: Uniflair Chilled Water
+                          deviceType: Cooling Solutions - Chillers and Heat Rejection
+                          brand: APC
+                        qty: 5
+                        specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                        documents: []
+                        opportunityLineId: OL-19009033
+                        shipTo:
+                          accountId: '121238981998'
+                          accountName: Technip holding benelux b.v
+                          accountGoldenId: '01234676789'
+                          countryCode: FR
+                        quoteChildItems:
+                          - {}
+                          - {}
+                          - {}
+                          - {}
+                          - {}
+                        lineItemName: Accessories
+                        lineItemType: 'group, accessory, option, service etc... '
+                        extendedNetPrice: '12321231.9999'
+                        adjustedNetPrice: '12321231.9999'
+                    lineItemName: Accessories
+                    lineItemType: 'group, accessory, option, service etc... '
+                    extendedNetPrice: consectetur
+                    adjustedNetPrice: ut officia nulla sed
+                  - actionCode: add
+                    parentId: 1234A1
+                    lineItemId: 128218QLKS
+                    product:
+                      commercialReference: EXE172006B1B or GCR_SM6_12kv
+                      configurable: 'false'
+                      description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                      margin: 4
+                      characteristics:
+                        - name: TC_REF_BOM_ITEM_0001
+                          value: QO120B
+                        - name: TC_REF_BOM_ITEM_0001
+                          value: QO120B
+                        - name: TC_REF_BOM_ITEM_0001
+                          value: QO120B
+                      productFamily: RM6 switchboard
+                      unitOfMeasure: MR (for Meter)
+                      cost:
+                        currency: Im
+                        value: ''
+                        display: $45.21
+                        amountType: Manufacturing Cost
+                      price:
+                        currency: Of
+                        value: '688'
+                        display: $45.21
+                        amountType: Manufacturing Cost
+                      range: Uniflair Chilled Water
+                      deviceType: Cooling Solutions - Chillers and Heat Rejection
+                      brand: APC
+                    qty: 5
+                    specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                    documents: []
+                    opportunityLineId: Ut amet
+                    shipTo:
+                      accountId: '121238981998'
+                      accountName: Technip holding benelux b.v
+                      accountGoldenId: '01234676789'
+                      countryCode: FR
+                    quoteChildItems:
+                      - parentId: 1234A1
+                        lineItemId: 128218QLKS
+                        product:
+                          commercialReference: EXE172006B1B or GCR_SM6_12kv
+                          configurable: 'false'
+                          description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                          margin: 4
+                          characteristics:
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                          productFamily: RM6 switchboard
+                          unitOfMeasure: MR (for Meter)
+                          cost:
+                            currency: cF
+                            value: '6609045550.248737834'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          price:
+                            currency: ik
+                            value: '08795409'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          range: Uniflair Chilled Water
+                          deviceType: Cooling Solutions - Chillers and Heat Rejection
+                          brand: APC
+                        qty: 5
+                        specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                        documents: []
+                        opportunityLineId: OL-19009033
+                        shipTo:
+                          accountId: '121238981998'
+                          accountName: Technip holding benelux b.v
+                          accountGoldenId: '01234676789'
+                          countryCode: FR
+                        quoteChildItems:
+                          - {}
+                          - {}
+                          - {}
+                          - {}
+                        lineItemName: Accessories
+                        lineItemType: 'group, accessory, option, service etc... '
+                        extendedNetPrice: '12321231.9999'
+                        adjustedNetPrice: '12321231.9999'
+                      - parentId: 1234A1
+                        lineItemId: 128218QLKS
+                        product:
+                          commercialReference: EXE172006B1B or GCR_SM6_12kv
+                          configurable: 'false'
+                          description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                          margin: 4
+                          characteristics:
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                          productFamily: RM6 switchboard
+                          unitOfMeasure: MR (for Meter)
+                          cost:
+                            currency: ec
+                            value: '751'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          price:
+                            currency: zf
+                            value: '9132#562852'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          range: Uniflair Chilled Water
+                          deviceType: Cooling Solutions - Chillers and Heat Rejection
+                          brand: APC
+                        qty: 5
+                        specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                        documents: []
+                        opportunityLineId: OL-19009033
+                        shipTo:
+                          accountId: '121238981998'
+                          accountName: Technip holding benelux b.v
+                          accountGoldenId: '01234676789'
+                          countryCode: FR
+                        quoteChildItems:
+                          - {}
+                          - {}
+                          - {}
+                          - {}
+                        lineItemName: Accessories
+                        lineItemType: 'group, accessory, option, service etc... '
+                        extendedNetPrice: '12321231.9999'
+                        adjustedNetPrice: '12321231.9999'
+                      - parentId: 1234A1
+                        lineItemId: 128218QLKS
+                        product:
+                          commercialReference: EXE172006B1B or GCR_SM6_12kv
+                          configurable: 'false'
+                          description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                          margin: 4
+                          characteristics:
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                          productFamily: RM6 switchboard
+                          unitOfMeasure: MR (for Meter)
+                          cost:
+                            currency: GW
+                            value: '23395623'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          price:
+                            currency: di
+                            value: '669533042'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          range: Uniflair Chilled Water
+                          deviceType: Cooling Solutions - Chillers and Heat Rejection
+                          brand: APC
+                        qty: 5
+                        specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                        documents: []
+                        opportunityLineId: OL-19009033
+                        shipTo:
+                          accountId: '121238981998'
+                          accountName: Technip holding benelux b.v
+                          accountGoldenId: '01234676789'
+                          countryCode: FR
+                        quoteChildItems:
+                          - {}
+                          - {}
+                        lineItemName: Accessories
+                        lineItemType: 'group, accessory, option, service etc... '
+                        extendedNetPrice: '12321231.9999'
+                        adjustedNetPrice: '12321231.9999'
+                      - parentId: 1234A1
+                        lineItemId: 128218QLKS
+                        product:
+                          commercialReference: EXE172006B1B or GCR_SM6_12kv
+                          configurable: 'false'
+                          description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                          margin: 4
+                          characteristics:
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                          productFamily: RM6 switchboard
+                          unitOfMeasure: MR (for Meter)
+                          cost:
+                            currency: wr
+                            value: 75Y069477212
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          price:
+                            currency: cs
+                            value: '2'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          range: Uniflair Chilled Water
+                          deviceType: Cooling Solutions - Chillers and Heat Rejection
+                          brand: APC
+                        qty: 5
+                        specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                        documents: []
+                        opportunityLineId: OL-19009033
+                        shipTo:
+                          accountId: '121238981998'
+                          accountName: Technip holding benelux b.v
+                          accountGoldenId: '01234676789'
+                          countryCode: FR
+                        quoteChildItems:
+                          - {}
+                        lineItemName: Accessories
+                        lineItemType: 'group, accessory, option, service etc... '
+                        extendedNetPrice: '12321231.9999'
+                        adjustedNetPrice: '12321231.9999'
+                    lineItemName: Accessories
+                    lineItemType: 'group, accessory, option, service etc... '
+                    extendedNetPrice: Duis
+                    adjustedNetPrice: reprehenderit
+                  - actionCode: delete
+                    parentId: 1234A1
+                    lineItemId: 128218QLKS
+                    product:
+                      commercialReference: EXE172006B1B or GCR_SM6_12kv
+                      configurable: 'false'
+                      description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                      margin: 4
+                      characteristics:
+                        - name: TC_REF_BOM_ITEM_0001
+                          value: QO120B
+                        - name: TC_REF_BOM_ITEM_0001
+                          value: QO120B
+                      productFamily: RM6 switchboard
+                      unitOfMeasure: MR (for Meter)
+                      cost:
+                        currency: FE
+                        value: '7693758024#61054556'
+                        display: $45.21
+                        amountType: Manufacturing Cost
+                      price:
+                        currency: dH
+                        value: '9444995523'
+                        display: $45.21
+                        amountType: Manufacturing Cost
+                      range: Uniflair Chilled Water
+                      deviceType: Cooling Solutions - Chillers and Heat Rejection
+                      brand: APC
+                    qty: 5
+                    specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                    documents: []
+                    opportunityLineId: aliquip proident
+                    shipTo:
+                      accountId: '121238981998'
+                      accountName: Technip holding benelux b.v
+                      accountGoldenId: '01234676789'
+                      countryCode: FR
+                    quoteChildItems:
+                      - parentId: 1234A1
+                        lineItemId: 128218QLKS
+                        product:
+                          commercialReference: EXE172006B1B or GCR_SM6_12kv
+                          configurable: 'false'
+                          description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                          margin: 4
+                          characteristics:
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                          productFamily: RM6 switchboard
+                          unitOfMeasure: MR (for Meter)
+                          cost:
+                            currency: DA
+                            value: '638938040'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          price:
+                            currency: AZ
+                            value: '24270'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          range: Uniflair Chilled Water
+                          deviceType: Cooling Solutions - Chillers and Heat Rejection
+                          brand: APC
+                        qty: 5
+                        specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                        documents: []
+                        opportunityLineId: OL-19009033
+                        shipTo:
+                          accountId: '121238981998'
+                          accountName: Technip holding benelux b.v
+                          accountGoldenId: '01234676789'
+                          countryCode: FR
+                        quoteChildItems:
+                          - {}
+                          - {}
+                          - {}
+                          - {}
+                          - {}
+                        lineItemName: Accessories
+                        lineItemType: 'group, accessory, option, service etc... '
+                        extendedNetPrice: '12321231.9999'
+                        adjustedNetPrice: '12321231.9999'
+                      - parentId: 1234A1
+                        lineItemId: 128218QLKS
+                        product:
+                          commercialReference: EXE172006B1B or GCR_SM6_12kv
+                          configurable: 'false'
+                          description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                          margin: 4
+                          characteristics:
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                          productFamily: RM6 switchboard
+                          unitOfMeasure: MR (for Meter)
+                          cost:
+                            currency: gH
+                            value: '27889155'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          price:
+                            currency: Nc
+                            value: '8241258698>0589'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          range: Uniflair Chilled Water
+                          deviceType: Cooling Solutions - Chillers and Heat Rejection
+                          brand: APC
+                        qty: 5
+                        specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                        documents: []
+                        opportunityLineId: OL-19009033
+                        shipTo:
+                          accountId: '121238981998'
+                          accountName: Technip holding benelux b.v
+                          accountGoldenId: '01234676789'
+                          countryCode: FR
+                        quoteChildItems:
+                          - {}
+                        lineItemName: Accessories
+                        lineItemType: 'group, accessory, option, service etc... '
+                        extendedNetPrice: '12321231.9999'
+                        adjustedNetPrice: '12321231.9999'
+                      - parentId: 1234A1
+                        lineItemId: 128218QLKS
+                        product:
+                          commercialReference: EXE172006B1B or GCR_SM6_12kv
+                          configurable: 'false'
+                          description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                          margin: 4
+                          characteristics:
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                          productFamily: RM6 switchboard
+                          unitOfMeasure: MR (for Meter)
+                          cost:
+                            currency: Co
+                            value: 72070237g4310
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          price:
+                            currency: BT
+                            value: '61001891179523620658'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          range: Uniflair Chilled Water
+                          deviceType: Cooling Solutions - Chillers and Heat Rejection
+                          brand: APC
+                        qty: 5
+                        specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                        documents: []
+                        opportunityLineId: OL-19009033
+                        shipTo:
+                          accountId: '121238981998'
+                          accountName: Technip holding benelux b.v
+                          accountGoldenId: '01234676789'
+                          countryCode: FR
+                        quoteChildItems:
+                          - {}
+                          - {}
+                          - {}
+                        lineItemName: Accessories
+                        lineItemType: 'group, accessory, option, service etc... '
+                        extendedNetPrice: '12321231.9999'
+                        adjustedNetPrice: '12321231.9999'
+                      - parentId: 1234A1
+                        lineItemId: 128218QLKS
+                        product:
+                          commercialReference: EXE172006B1B or GCR_SM6_12kv
+                          configurable: 'false'
+                          description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                          margin: 4
+                          characteristics:
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                          productFamily: RM6 switchboard
+                          unitOfMeasure: MR (for Meter)
+                          cost:
+                            currency: sN
+                            value: '932365321399'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          price:
+                            currency: vP
+                            value: '7'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          range: Uniflair Chilled Water
+                          deviceType: Cooling Solutions - Chillers and Heat Rejection
+                          brand: APC
+                        qty: 5
+                        specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                        documents: []
+                        opportunityLineId: OL-19009033
+                        shipTo:
+                          accountId: '121238981998'
+                          accountName: Technip holding benelux b.v
+                          accountGoldenId: '01234676789'
+                          countryCode: FR
+                        quoteChildItems:
+                          - {}
+                        lineItemName: Accessories
+                        lineItemType: 'group, accessory, option, service etc... '
+                        extendedNetPrice: '12321231.9999'
+                        adjustedNetPrice: '12321231.9999'
+                    lineItemName: Accessories
+                    lineItemType: 'group, accessory, option, service etc... '
+                    extendedNetPrice: dolor id Excepteur Ut anim
+                    adjustedNetPrice: quis
+                  - actionCode: add
+                    parentId: 1234A1
+                    lineItemId: 128218QLKS
+                    product:
+                      commercialReference: EXE172006B1B or GCR_SM6_12kv
+                      configurable: 'false'
+                      description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                      margin: 4
+                      characteristics:
+                        - name: TC_REF_BOM_ITEM_0001
+                          value: QO120B
+                        - name: TC_REF_BOM_ITEM_0001
+                          value: QO120B
+                        - name: TC_REF_BOM_ITEM_0001
+                          value: QO120B
+                        - name: TC_REF_BOM_ITEM_0001
+                          value: QO120B
+                      productFamily: RM6 switchboard
+                      unitOfMeasure: MR (for Meter)
+                      cost:
+                        currency: Qe
+                        value: '364664325'
+                        display: $45.21
+                        amountType: Manufacturing Cost
+                      price:
+                        currency: WD
+                        value: 0J1751230429
+                        display: $45.21
+                        amountType: Manufacturing Cost
+                      range: Uniflair Chilled Water
+                      deviceType: Cooling Solutions - Chillers and Heat Rejection
+                      brand: APC
+                    qty: 5
+                    specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                    documents: []
+                    opportunityLineId: consequat veniam
+                    shipTo:
+                      accountId: '121238981998'
+                      accountName: Technip holding benelux b.v
+                      accountGoldenId: '01234676789'
+                      countryCode: FR
+                    quoteChildItems:
+                      - parentId: 1234A1
+                        lineItemId: 128218QLKS
+                        product:
+                          commercialReference: EXE172006B1B or GCR_SM6_12kv
+                          configurable: 'false'
+                          description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                          margin: 4
+                          characteristics:
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                          productFamily: RM6 switchboard
+                          unitOfMeasure: MR (for Meter)
+                          cost:
+                            currency: mk
+                            value: 9I7616777183
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          price:
+                            currency: iB
+                            value: 387?63897182746
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          range: Uniflair Chilled Water
+                          deviceType: Cooling Solutions - Chillers and Heat Rejection
+                          brand: APC
+                        qty: 5
+                        specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                        documents: []
+                        opportunityLineId: OL-19009033
+                        shipTo:
+                          accountId: '121238981998'
+                          accountName: Technip holding benelux b.v
+                          accountGoldenId: '01234676789'
+                          countryCode: FR
+                        quoteChildItems:
+                          - {}
+                          - {}
+                          - {}
+                          - {}
+                          - {}
+                        lineItemName: Accessories
+                        lineItemType: 'group, accessory, option, service etc... '
+                        extendedNetPrice: '12321231.9999'
+                        adjustedNetPrice: '12321231.9999'
+                      - parentId: 1234A1
+                        lineItemId: 128218QLKS
+                        product:
+                          commercialReference: EXE172006B1B or GCR_SM6_12kv
+                          configurable: 'false'
+                          description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                          margin: 4
+                          characteristics:
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                          productFamily: RM6 switchboard
+                          unitOfMeasure: MR (for Meter)
+                          cost:
+                            currency: pd
+                            value: 915l5
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          price:
+                            currency: kB
+                            value: '4581370'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          range: Uniflair Chilled Water
+                          deviceType: Cooling Solutions - Chillers and Heat Rejection
+                          brand: APC
+                        qty: 5
+                        specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                        documents: []
+                        opportunityLineId: OL-19009033
+                        shipTo:
+                          accountId: '121238981998'
+                          accountName: Technip holding benelux b.v
+                          accountGoldenId: '01234676789'
+                          countryCode: FR
+                        quoteChildItems:
+                          - {}
+                          - {}
+                          - {}
+                        lineItemName: Accessories
+                        lineItemType: 'group, accessory, option, service etc... '
+                        extendedNetPrice: '12321231.9999'
+                        adjustedNetPrice: '12321231.9999'
+                      - parentId: 1234A1
+                        lineItemId: 128218QLKS
+                        product:
+                          commercialReference: EXE172006B1B or GCR_SM6_12kv
+                          configurable: 'false'
+                          description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                          margin: 4
+                          characteristics:
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                          productFamily: RM6 switchboard
+                          unitOfMeasure: MR (for Meter)
+                          cost:
+                            currency: Pi
+                            value: '9'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          price:
+                            currency: XB
+                            value: '3754277_92809321469'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          range: Uniflair Chilled Water
+                          deviceType: Cooling Solutions - Chillers and Heat Rejection
+                          brand: APC
+                        qty: 5
+                        specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                        documents: []
+                        opportunityLineId: OL-19009033
+                        shipTo:
+                          accountId: '121238981998'
+                          accountName: Technip holding benelux b.v
+                          accountGoldenId: '01234676789'
+                          countryCode: FR
+                        quoteChildItems:
+                          - {}
+                          - {}
+                        lineItemName: Accessories
+                        lineItemType: 'group, accessory, option, service etc... '
+                        extendedNetPrice: '12321231.9999'
+                        adjustedNetPrice: '12321231.9999'
+                      - parentId: 1234A1
+                        lineItemId: 128218QLKS
+                        product:
+                          commercialReference: EXE172006B1B or GCR_SM6_12kv
+                          configurable: 'false'
+                          description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                          margin: 4
+                          characteristics:
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                          productFamily: RM6 switchboard
+                          unitOfMeasure: MR (for Meter)
+                          cost:
+                            currency: YZ
+                            value: T705
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          price:
+                            currency: hx
+                            value: 020883001S84496436
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          range: Uniflair Chilled Water
+                          deviceType: Cooling Solutions - Chillers and Heat Rejection
+                          brand: APC
+                        qty: 5
+                        specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                        documents: []
+                        opportunityLineId: OL-19009033
+                        shipTo:
+                          accountId: '121238981998'
+                          accountName: Technip holding benelux b.v
+                          accountGoldenId: '01234676789'
+                          countryCode: FR
+                        quoteChildItems:
+                          - {}
+                        lineItemName: Accessories
+                        lineItemType: 'group, accessory, option, service etc... '
+                        extendedNetPrice: '12321231.9999'
+                        adjustedNetPrice: '12321231.9999'
+                      - parentId: 1234A1
+                        lineItemId: 128218QLKS
+                        product:
+                          commercialReference: EXE172006B1B or GCR_SM6_12kv
+                          configurable: 'false'
+                          description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                          margin: 4
+                          characteristics:
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                            - name: TC_REF_BOM_ITEM_0001
+                              value: QO120B
+                          productFamily: RM6 switchboard
+                          unitOfMeasure: MR (for Meter)
+                          cost:
+                            currency: YV
+                            value: '8'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          price:
+                            currency: lC
+                            value: '024751|6131920262'
+                            display: $45.21
+                            amountType: Manufacturing Cost
+                          range: Uniflair Chilled Water
+                          deviceType: Cooling Solutions - Chillers and Heat Rejection
+                          brand: APC
+                        qty: 5
+                        specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                        documents: []
+                        opportunityLineId: OL-19009033
+                        shipTo:
+                          accountId: '121238981998'
+                          accountName: Technip holding benelux b.v
+                          accountGoldenId: '01234676789'
+                          countryCode: FR
+                        quoteChildItems:
+                          - {}
+                          - {}
+                          - {}
+                        lineItemName: Accessories
+                        lineItemType: 'group, accessory, option, service etc... '
+                        extendedNetPrice: '12321231.9999'
+                        adjustedNetPrice: '12321231.9999'
+                    lineItemName: Accessories
+                    lineItemType: 'group, accessory, option, service etc... '
+                    extendedNetPrice: mollit amet
+                    adjustedNetPrice: proident do
+                country: AU
+                businessUnit: B_ECOTRA
+                documents: []
+                quoteOwner: SESA506864
+                systemOpportunityId: 006g000000JJ7F5AAL
+                systemQuoteLinkId: a0U0U000004izz3UAA
+                quoteCacheId: '-1'
+              targetInfo:
+                quotationSystem: OracleCPQ
+                properties:
+                  - key: invocationId
+                    value: '4129359'
+              sourceInfo:
+                sourceSystemName: PowerbuildContractor
+                sourceConfigurationId: QQ32145AF3467SY76545
+                sourceConfigurationName: Project SM6
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              quoteUpdate:
+                $ref: '#/definitions/quoteUpdate'
+              targetInfo:
+                $ref: '#/definitions/targetInfo'
+              sourceInfo:
+                $ref: '#/definitions/sourceInfo'
+          description: ''
+          x-examples:
+            example-1: {}
+      description: 'Update Quotation with the account,header info and line items'
+      tags:
+        - quotation
+  '/accounts/{account-id}/quotes/{quote-id}/orders':
+    parameters:
+      - type: string
+        name: quote-id
+        in: path
+        required: true
+      - type: string
+        name: account-id
+        in: path
+        required: true
+    post:
+      summary: Create an order from a quote id
+      operationId: post-quote-id-orders
+      responses:
+        '202':
+          description: Accepted
+          schema:
+            type: object
+            properties:
+              quoteStatus:
+                type: string
+              messageCode:
+                type: string
+              message:
+                type: string
+          examples:
+            example-1:
+              quoteStatus: dolor elit
+              messageCode: ipsum ad
+              message: 'aliquip '
+        '204':
+          $ref: '#/paths/~1%7Bquote-id%7D~1configurations/post/responses/204'
+        '400':
+          $ref: '#/paths/~1quotes/post/responses/400'
+        '401':
+          $ref: '#/paths/~1quotes/post/responses/401'
+        '403':
+          $ref: '#/paths/~1quotes/post/responses/403'
+        '404':
+          $ref: '#/paths/~1quotes/post/responses/404'
+        '429':
+          $ref: '#/paths/~1quotes/post/responses/429'
+        '500':
+          $ref: '#/paths/~1quotes/post/responses/500'
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              quoteItems:
+                type: array
+                description: quote items are not modified in this operation.
+                items:
+                  $ref: '#/definitions/quoteItem'
+              orderInfo:
+                $ref: '#/definitions/order'
+              targetInfo:
+                $ref: '#/definitions/targetInfo'
+              sourceInfo:
+                $ref: '#/definitions/sourceInfo'
+          description: ''
+          x-examples:
+            example-1:
+              quoteItems:
+                - parentId: 1234A1
+                  lineItemId: 128218QLKS
+                  product:
+                    commercialReference: EXE172006B1B or GCR_SM6_12kv
+                    configurable: 'false'
+                    description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                    margin: 4
+                    characteristics:
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                    productFamily: RM6 switchboard
+                    unitOfMeasure: MR (for Meter)
+                    cost:
+                      currency: Jz
+                      value: 0h0095
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    price:
+                      currency: Hq
+                      value: '03'
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    range: Uniflair Chilled Water
+                    deviceType: Cooling Solutions - Chillers and Heat Rejection
+                    brand: APC
+                  qty: 5
+                  specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                  documents: []
+                  opportunityLineId: OL-19009033
+                  shipTo:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  quoteChildItems:
+                    - {}
+                    - {}
+                    - {}
+                    - {}
+                  lineItemName: Accessories
+                  lineItemType: 'group, accessory, option, service etc... '
+                  extendedNetPrice: '12321231.9999'
+                  adjustedNetPrice: '12321231.9999'
+                - parentId: 1234A1
+                  lineItemId: 128218QLKS
+                  product:
+                    commercialReference: EXE172006B1B or GCR_SM6_12kv
+                    configurable: 'false'
+                    description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                    margin: 4
+                    characteristics:
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                    productFamily: RM6 switchboard
+                    unitOfMeasure: MR (for Meter)
+                    cost:
+                      currency: aP
+                      value: '19131835'
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    price:
+                      currency: 'ON'
+                      value: 0
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    range: Uniflair Chilled Water
+                    deviceType: Cooling Solutions - Chillers and Heat Rejection
+                    brand: APC
+                  qty: 5
+                  specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                  documents: []
+                  opportunityLineId: OL-19009033
+                  shipTo:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  quoteChildItems:
+                    - {}
+                    - {}
+                    - {}
+                    - {}
+                  lineItemName: Accessories
+                  lineItemType: 'group, accessory, option, service etc... '
+                  extendedNetPrice: '12321231.9999'
+                  adjustedNetPrice: '12321231.9999'
+                - parentId: 1234A1
+                  lineItemId: 128218QLKS
+                  product:
+                    commercialReference: EXE172006B1B or GCR_SM6_12kv
+                    configurable: 'false'
+                    description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                    margin: 4
+                    characteristics:
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                    productFamily: RM6 switchboard
+                    unitOfMeasure: MR (for Meter)
+                    cost:
+                      currency: Kj
+                      value: "07'59565017"
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    price:
+                      currency: WY
+                      value: '168065'
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    range: Uniflair Chilled Water
+                    deviceType: Cooling Solutions - Chillers and Heat Rejection
+                    brand: APC
+                  qty: 5
+                  specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                  documents: []
+                  opportunityLineId: OL-19009033
+                  shipTo:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  quoteChildItems:
+                    - {}
+                    - {}
+                    - {}
+                    - {}
+                    - {}
+                  lineItemName: Accessories
+                  lineItemType: 'group, accessory, option, service etc... '
+                  extendedNetPrice: '12321231.9999'
+                  adjustedNetPrice: '12321231.9999'
+                - parentId: 1234A1
+                  lineItemId: 128218QLKS
+                  product:
+                    commercialReference: EXE172006B1B or GCR_SM6_12kv
+                    configurable: 'false'
+                    description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                    margin: 4
+                    characteristics:
+                      - name: TC_REF_BOM_ITEM_0001
+                        value: QO120B
+                    productFamily: RM6 switchboard
+                    unitOfMeasure: MR (for Meter)
+                    cost:
+                      currency: Xa
+                      value: 48078571r42355997
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    price:
+                      currency: xE
+                      value: '106960'
+                      display: $45.21
+                      amountType: Manufacturing Cost
+                    range: Uniflair Chilled Water
+                    deviceType: Cooling Solutions - Chillers and Heat Rejection
+                    brand: APC
+                  qty: 5
+                  specification: SmUgbSdhcHBlbGxlIERvcmlhbg==
+                  documents: []
+                  opportunityLineId: OL-19009033
+                  shipTo:
+                    accountId: '121238981998'
+                    accountName: Technip holding benelux b.v
+                    accountGoldenId: '01234676789'
+                    countryCode: FR
+                  quoteChildItems:
+                    - {}
+                  lineItemName: Accessories
+                  lineItemType: 'group, accessory, option, service etc... '
+                  extendedNetPrice: '12321231.9999'
+                  adjustedNetPrice: '12321231.9999'
+              orderInfo:
+                poNumber: PO-SE-4827
+                freightTerms: FOB
+                shippingMethod: air
+                expectedShipDate: '2020-05-04T10:57:00.000Z'
+                expectedDeliveryDate: '2020-05-04T10:57:00.000Z'
+                orderType: 'Standard Order, General Sales Order'
+                deliveryBlock: '01, 02'
+                shipInstructions: Please deliver on week days
+                comment: 'Please do not ship on next wednesday, we are closed.'
+                orderNumber: '0221234950'
+                shippingAddress:
+                  street: Rue Letort
+                  country: FR
+                  language: en
+                  businessName: Blablabla
+                  additionalLine: '5ième Etage, Bâtiment BC'
+                  city: Paris
+                  state: Ile de France
+                  zipcode: '75018'
+                  addressLine1: 33 Lane 1
+                  addressLine2: 'Street #23, Nicolas Way'
+                shipTo:
+                  accountId: '121238981998'
+                  accountName: Technip holding benelux b.v
+                  accountGoldenId: '01234676789'
+                  countryCode: FR
+                poDate: '2020-05-04T10:57:00.000Z'
+              targetInfo:
+                quotationSystem: OracleCPQ
+                properties:
+                  - key: invocationId
+                    value: '4129359'
+                  - key: invocationId
+                    value: '4129359'
+                  - key: invocationId
+                    value: '4129359'
+                  - key: invocationId
+                    value: '4129359'
+              sourceInfo:
+                sourceSystemName: PowerbuildContractor
+                sourceConfigurationId: QQ32145AF3467SY76545
+                sourceConfigurationName: Project SM6
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              quoteItems:
+                type: array
+                description: quote items are not modified in this operation.
+                items:
+                  $ref: '#/definitions/quoteItem'
+              orderInfo:
+                $ref: '#/definitions/order'
+              targetInfo:
+                $ref: '#/definitions/targetInfo'
+              sourceInfo:
+                $ref: '#/definitions/sourceInfo'
+          description: ''
+          x-examples:
+            example-1: {}
+        - type: string
+          in: header
+          name: X-IDMS-Authorization
+          description: IDMS user context access token
+          required: true
+      description: The order is submitted to the quotation system. Quote items cannot be modify by using this operation.
+      tags:
+        - quotation
+  '/accounts/{account-id}/quotes/{quote-id}/actions':
+    parameters:
+      - type: string
+        name: account-id
+        in: path
+        required: true
+      - type: string
+        name: quote-id
+        in: path
+        required: true
+    post:
+      summary: Execution an action on a quote
+      operationId: post-quote-id-submit
+      responses:
+        '201':
+          description: Created
+          schema:
+            type: object
+            properties:
+              quoteStatus:
+                type: string
+              messageCode:
+                type: string
+              message:
+                type: string
+          examples:
+            example-1:
+              quoteStatus: Lorem elit Duis
+              messageCode: aliqua laborum
+              message: proident Duis
+        '204':
+          $ref: '#/paths/~1%7Bquote-id%7D~1configurations/post/responses/204'
+        '400':
+          $ref: '#/paths/~1quotes/post/responses/400'
+        '401':
+          $ref: '#/paths/~1quotes/post/responses/401'
+        '403':
+          $ref: '#/paths/~1quotes/post/responses/403'
+        '404':
+          $ref: '#/paths/~1quotes/post/responses/404'
+        '429':
+          $ref: '#/paths/~1quotes/post/responses/429'
+        '500':
+          $ref: '#/paths/~1quotes/post/responses/500'
+      description: |-
+        Request an action on a quote that could result in a state change of the quote resource. Possible actions at the moment :
+        - request-approval : trigger an approval process (asynchronous activity) on the provided quote id.
+        - notify-contacts : trigger contact notification on a quote. It as an action to execute on a quote. Ex: Email notification
+      parameters:
+        - type: string
+          in: header
+          name: X-IDMS-Authorization
+          description: IDMS user context access token
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              targetInfo:
+                $ref: '#/definitions/targetInfo'
+              actionName:
+                type: string
+                enum:
+                  - request-approval
+                  - notify-contacts
+                example: request-approval
+                description: 'name of the action to perform (e.g. request-approval, notify-contacts) '
+              sourceInfo:
+                $ref: '#/definitions/sourceInfo'
+            required:
+              - targetInfo
+              - actionName
+              - sourceInfo
+          description: An action could result in a status change.
+          x-examples:
+            example-1:
+              targetInfo:
+                quotationSystem: OracleCPQ
+                properties:
+                  - key: invocationId
+                    value: '4129359'
+                  - key: invocationId
+                    value: '4129359'
+              actionName: request-approval
+              sourceInfo:
+                sourceSystemName: PowerbuildContractor
+                sourceConfigurationId: QQ32145AF3467SY76545
+                sourceConfigurationName: Project SM6
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              targetInfo:
+                $ref: '#/definitions/targetInfo'
+              actionName:
+                type: string
+                enum:
+                  - request-approval
+                  - notify-contacts
+                example: request-approval
+                description: 'name of the action to perform (e.g. request-approval, notify-contacts) '
+              sourceInfo:
+                $ref: '#/definitions/sourceInfo'
+            required:
+              - targetInfo
+              - actionName
+              - sourceInfo
+          description: An action could result in a status change.
+          x-examples:
+            example-1: {}
+      tags:
+        - quotation
+  '/accounts/{account-id}/quotes/{quote-id}/documents':
+    parameters:
+      - type: string
+        name: quote-id
+        in: path
+        required: true
+      - type: string
+        name: account-id
+        in: path
+        required: true
+    get:
+      summary: Get quote document
+      operationId: get-accounts-account-id-quotes-quote-id-documents
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              type: string
+              description: 'Application/Pdf, Application/Doc'
+        '204':
+          $ref: '#/paths/~1%7Bquote-id%7D~1configurations/post/responses/204'
+        '400':
+          $ref: '#/paths/~1quotes/post/responses/400'
+        '401':
+          $ref: '#/paths/~1quotes/post/responses/401'
+        '403':
+          $ref: '#/paths/~1quotes/post/responses/403'
+        '404':
+          $ref: '#/paths/~1quotes/post/responses/404'
+        '429':
+          $ref: '#/paths/~1quotes/post/responses/429'
+        '500':
+          $ref: '#/paths/~1quotes/post/responses/500'
+      tags:
+        - quotation
+      description: 'Used to request export of a quote in document format . Ex: PDF document'
+      parameters:
+        - type: string
+          in: query
+          name: target-quotation-system
+          required: true
+          default: OracleCPQ
+  '/accounts/{account-id}/parts':
+    parameters:
+      - type: string
+        name: account-id
+        in: path
+        required: true
+    get:
+      summary: Get parts
+      operationId: get-parts-search
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/product'
+          examples:
+            example-1:
+              - commercialReference: EXE172006B1B or GCR_SM6_12kv
+                configurable: 'false'
+                description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                margin: 4
+                characteristics:
+                  - name: TC_REF_BOM_ITEM_0001
+                    value: QO120B
+                  - name: TC_REF_BOM_ITEM_0001
+                    value: QO120B
+                  - name: TC_REF_BOM_ITEM_0001
+                    value: QO120B
+                productFamily: RM6 switchboard
+                unitOfMeasure: MR (for Meter)
+                cost:
+                  currency: li
+                  value: 279296R24629944
+                  display: $45.21
+                  amountType: Manufacturing Cost
+                price:
+                  currency: vU
+                  value: '32083'
+                  display: $45.21
+                  amountType: Manufacturing Cost
+                range: Uniflair Chilled Water
+                deviceType: Cooling Solutions - Chillers and Heat Rejection
+                brand: APC
+              - commercialReference: EXE172006B1B or GCR_SM6_12kv
+                configurable: 'false'
+                description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                margin: 4
+                characteristics:
+                  - name: TC_REF_BOM_ITEM_0001
+                    value: QO120B
+                productFamily: RM6 switchboard
+                unitOfMeasure: MR (for Meter)
+                cost:
+                  currency: py
+                  value: ''
+                  display: $45.21
+                  amountType: Manufacturing Cost
+                price:
+                  currency: MN
+                  value: '27]300293124'
+                  display: $45.21
+                  amountType: Manufacturing Cost
+                range: Uniflair Chilled Water
+                deviceType: Cooling Solutions - Chillers and Heat Rejection
+                brand: APC
+              - commercialReference: EXE172006B1B or GCR_SM6_12kv
+                configurable: 'false'
+                description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                margin: 4
+                characteristics:
+                  - name: TC_REF_BOM_ITEM_0001
+                    value: QO120B
+                  - name: TC_REF_BOM_ITEM_0001
+                    value: QO120B
+                  - name: TC_REF_BOM_ITEM_0001
+                    value: QO120B
+                  - name: TC_REF_BOM_ITEM_0001
+                    value: QO120B
+                productFamily: RM6 switchboard
+                unitOfMeasure: MR (for Meter)
+                cost:
+                  currency: be
+                  value: 286Y42531088
+                  display: $45.21
+                  amountType: Manufacturing Cost
+                price:
+                  currency: rG
+                  value: '272027873'
+                  display: $45.21
+                  amountType: Manufacturing Cost
+                range: Uniflair Chilled Water
+                deviceType: Cooling Solutions - Chillers and Heat Rejection
+                brand: APC
+              - commercialReference: EXE172006B1B or GCR_SM6_12kv
+                configurable: 'false'
+                description: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+                margin: 4
+                characteristics:
+                  - name: TC_REF_BOM_ITEM_0001
+                    value: QO120B
+                productFamily: RM6 switchboard
+                unitOfMeasure: MR (for Meter)
+                cost:
+                  currency: bX
+                  value: '82198445'
+                  display: $45.21
+                  amountType: Manufacturing Cost
+                price:
+                  currency: XZ
+                  value: '6644804:2'
+                  display: $45.21
+                  amountType: Manufacturing Cost
+                range: Uniflair Chilled Water
+                deviceType: Cooling Solutions - Chillers and Heat Rejection
+                brand: APC
+        '204':
+          $ref: '#/paths/~1%7Bquote-id%7D~1configurations/post/responses/204'
+        '400':
+          $ref: '#/paths/~1quotes/post/responses/400'
+        '401':
+          $ref: '#/paths/~1quotes/post/responses/401'
+        '403':
+          $ref: '#/paths/~1quotes/post/responses/403'
+        '404':
+          $ref: '#/paths/~1quotes/post/responses/404'
+        '429':
+          $ref: '#/paths/~1quotes/post/responses/429'
+        '500':
+          $ref: '#/paths/~1quotes/post/responses/500'
+      description: To fetch parts from CPQ  based on given account
+      parameters:
+        - type: string
+          in: query
+          name: target-quotation-system
+          required: true
+          default: OracleCPQ
+          description: backend quotation system if known.
+        - type: integer
+          in: query
+          name: page-size
+          default: '20'
+          description: offset
+          required: true
+        - type: integer
+          in: query
+          name: page-number
+          default: '1'
+          description: number of entries in the result set per page
+          required: true
+        - type: string
+          in: query
+          name: part-keyword
+          description: keyword to search. 3 letters minimum.
+          required: true
+          minLength: 3
+      tags:
+        - quotation
+securityDefinitions:
+  oauth2:
+    type: oauth2
+    flow: implicit
+    scopes: {}
+    description: ''
+  X-IDMS-Authorization:
+    name: X-IDMS-Authorization
+    type: apiKey
+    in: header
+    description: IDMS User context of the user accessing the API
+  X-Ping-Authorization:
+    name: X-Ping-Authorization
+    type: apiKey
+    in: header
+    description: 'PING SSO user token '
+  apikey:
+    name: apikey
+    type: apiKey
+    in: header
+    description: API Key of the consumer
+definitions:
+  quoteItem:
+    type: object
+    description: quote item is a line item.
+    properties:
+      parentId:
+        type: string
+        description: 'Unique Id representing the Quote-Line parent ID in the source system. '
+        example: 1234A1
+      lineItemId:
+        type: string
+        description: Unique Id representing the Quote-Line ID in the source system.
+        example: 128218QLKS
+      product:
+        $ref: '#/definitions/product'
+      qty:
+        type: integer
+        example: 5
+        description: Quantity representing the QuoteItem quantity
+      specification:
+        type: string
+        description: "Text representing the technical specifications of the offer selected/configured in base 64 format (charset UTF-8).\n\nThe given example stands for :\n\nCast-resin support type CT  acc. DIN 42600 part 8 (narrow design) Transformation-Ratio CT: 600/1/1 A  Nameplate acc. to: IEC61869-2, 2pcs. (1x loose)  CT-Core 1:  600 A / 1 A / 1FS 10 / 5 VA  CT-Core 2:  600 A / 1 A / 5P 10 / 5 VA  Rat. Permanent Overcurrent Factor (thermal): 1.2 x Ir  Rat. Shorttime Withstand Current: 20 kA "
+        example: SmUgbSdhcHBlbGxlIERvcmlhbg==
+      documents:
+        description: Nature of the linked document (
+        type: array
+        items:
+          type: object
+          title: Link - OAS2
+          description: Link to related resource endpoint.
+          properties:
+            rel:
+              type: string
+              description: |-
+                A word describing the relationship
+
+
+                Standardized relationship names are defined here but names are not limited to this list.
+
+
+                https://www.iana.org/assignments/link-relations/link-relations.xhtml
+              default: related
+              example: 'self, related, help, chapter, first, last, parent'
+            href:
+              type: string
+              format: uri
+              description: URI for a resource endpoint.
+              example: 'https://example.com/book/v1/chapter2'
+            title:
+              type: string
+              description: Optional human-readable title for the link.
+              example: Next Chapter
+          required:
+            - rel
+            - href
+      opportunityLineId:
+        type: string
+        description: Opportunity line identifier (human readable) if any
+        example: OL-19009033
+      shipTo:
+        $ref: '#/definitions/account'
+      quoteChildItems:
+        type: array
+        description: children of the quote line
+        items:
+          $ref: '#/definitions/quoteItem'
+      lineItemName:
+        type: string
+        description: 'human readable name. Could be used as a label. '
+        example: Accessories
+      lineItemType:
+        type: string
+        description: 'type of line item. Could be only for organizational purpose "group" or for designating the nature of a line item ("accessory", "option", "service", etc.)'
+        example: 'group, accessory, option, service etc... '
+      extendedNetPrice:
+        type: string
+        description: price of a product multiplied by a quantity
+        example: '12321231.9999'
+      adjustedNetPrice:
+        type: string
+        description: = extendedNetPrice - discount (if any)
+        example: '12321231.9999'
+  quoteItemUpdate:
+    type: object
+    description: quote item is a line item.
+    properties:
+      parentId:
+        type: string
+        description: 'Unique Id representing the Quote-Line parent ID in the source system. '
+        example: 1234A1
+      lineItemId:
+        type: string
+        description: Unique Id representing the Quote-Line ID in the source system.
+        example: 128218QLKS
+      product:
+        $ref: '#/definitions/product'
+      qty:
+        type: integer
+        example: 5
+        description: Quantity representing the QuoteItem quantity
+      specification:
+        type: string
+        description: "Text representing the technical specifications of the offer selected/configured in base 64 format (charset UTF-8).\n\nThe given example stands for :\n\nCast-resin support type CT  acc. DIN 42600 part 8 (narrow design) Transformation-Ratio CT: 600/1/1 A  Nameplate acc. to: IEC61869-2, 2pcs. (1x loose)  CT-Core 1:  600 A / 1 A / 1FS 10 / 5 VA  CT-Core 2:  600 A / 1 A / 5P 10 / 5 VA  Rat. Permanent Overcurrent Factor (thermal): 1.2 x Ir  Rat. Shorttime Withstand Current: 20 kA "
+        example: SmUgbSdhcHBlbGxlIERvcmlhbg==
+      documents:
+        description: Nature of the linked document (
+        type: array
+        items:
+          $ref: '#/definitions/quoteItem/properties/documents/items'
+      opportunityLineId:
+        type: string
+        description: opportunity id if any
+      shipTo:
+        $ref: '#/definitions/account'
+      quoteChildItems:
+        type: array
+        description: children of the quote line
+        items:
+          $ref: '#/definitions/quoteItem'
+      lineItemName:
+        type: string
+        description: 'human readable name. Could be used as a label. '
+        example: Accessories
+      lineItemType:
+        type: string
+        description: 'type of line item. Could be only for organizational purpose "group" or for designating the nature of a line item ("accessory", "option", "service", etc.)'
+        example: 'group, accessory, option, service etc... '
+      extendedNetPrice:
+        type: string
+        description: price of a product multiplied by a quantity
+      adjustedNetPrice:
+        type: string
+        description: = extendedNetPrice - discount (if any)
+      actionCode:
+        type: string
+        description: update type (OAGIS)
+        enum:
+          - add
+          - change
+          - delete
+    required:
+      - actionCode
+  product:
+    type: object
+    description: 'Product Reference information '
+    properties:
+      commercialReference:
+        type: string
+        example: EXE172006B1B or GCR_SM6_12kv
+        description: 'Commercial Reference or a generic commercial référence '
+      configurable:
+        type: boolean
+        description: Indicates the product is a configurable product with a generic commerical reference number (GCR)
+        default: 'false'
+      description:
+        type: string
+        example: VkNCIEJhc2UgMTcuNWtWIDIwa0EgNjMwQQ==
+        description: Description of the product reference (Encoded Base 64 Charset UTF-8)
+      margin:
+        type: integer
+        example: 4
+        description: Margin percentage
+      characteristics:
+        type: array
+        description: Technical characteristics of the offer as it has been selected via an offer Selector/configurator
+        items:
+          $ref: '#/definitions/characteristic'
+      productFamily:
+        type: string
+        example: RM6 switchboard
+        description: Pyramid P0 Product Family (aka Product Group)
+      unitOfMeasure:
+        type: string
+        example: MR (for Meter)
+        description: |-
+          ISO Code of measurment
+          http://t3.apptrix.com/syteline/Language/en-US/fields/i/iso_um_ums.htm
+      cost:
+        description: Resource representing a currency amount.
+        title: Currency
+        type: object
+        properties:
+          currency:
+            type: string
+            description: 'Three character currency code, as defined by ISO 4217.'
+            pattern: '^[a-zA-Z]{2}$'
+          value:
+            type: string
+            description: Currency amount as a decimal value.
+            pattern: "^\\d*(.\\d+)?$"
+          display:
+            type: string
+            description: 'Optional currency amount suitable for display, including the currency symbol.'
+            example: $45.21
+          amountType:
+            type: string
+            description: Optional type describing the nature of the amount.
+            example: Manufacturing Cost
+        required:
+          - currency
+          - value
+      price:
+        description: Resource representing a currency amount.
+        title: Currency
+        type: object
+        properties:
+          currency:
+            type: string
+            description: 'Three character currency code, as defined by ISO 4217.'
+            pattern: '^[a-zA-Z]{2}$'
+          value:
+            type: string
+            description: Currency amount as a decimal value.
+            pattern: "^\\d*(.\\d+)?$"
+          display:
+            type: string
+            description: 'Optional currency amount suitable for display, including the currency symbol.'
+            example: $45.21
+          amountType:
+            type: string
+            description: Optional type describing the nature of the amount.
+            example: Manufacturing Cost
+        required:
+          - currency
+          - value
+      range:
+        type: string
+        example: Uniflair Chilled Water
+        description: A set of variations of the same product platform that appeal to different market segments.
+      deviceType:
+        type: string
+        example: Cooling Solutions - Chillers and Heat Rejection
+        description: A Device type is a group of devices. It allows you to gather devices and define common means to process the data they transmit.
+      brand:
+        type: string
+        example: APC
+        description: 'A trademark or distinctive name identifying a product, service, or organization.'
+    required:
+      - commercialReference
+      - configurable
+  sourceInfo:
+    type: object
+    description: 'The system requesting the creation or the update of a quote (could be a configurator, a selector, a quotation tool or a e-commerce site)'
+    properties:
+      sourceSystemName:
+        type: string
+        description: Name of configurator system consuming this interface.
+        example: PowerbuildContractor
+      sourceConfigurationId:
+        type: string
+        description: |-
+          Unique identifier of the configuration representation in the source system.
+
+          For example in Powerbuild it would be the "projectID"
+        example: QQ32145AF3467SY76545
+      sourceConfigurationName:
+        type: string
+        example: Project SM6
+        description: Name of the configuration in the source system
+    required:
+      - sourceSystemName
+  characteristic:
+    description: Selections/configuration Characteristics data
+    type: object
+    properties:
+      name:
+        type: string
+        example: TC_REF_BOM_ITEM_0001
+        description: Name of the technical characteristic
+      value:
+        type: string
+        example: QO120B
+        description: Value of the technical characteristic
+    required:
+      - name
+      - value
+  quoteInfo:
+    type: object
+    description: Success message indicating that Quote object has been Updated/created. Response model mainly.
+    title: quoteInfo
+    x-examples:
+      example-1: {}
+      example-2: {}
+    properties:
+      quoteId:
+        type: string
+        example: 1234b563w43253246sfqgdst2326w6qw74sdgfewqt
+        description: "unique identifier in the quotation system. In OracleCPQ it's also known as \"transaction id\"."
+      quoteVersion:
+        type: string
+        example: '3'
+        description: Version number of the Quote object having been updated or created
+      quoteNumber:
+        type: string
+        description: Business reference of the quote in the quotation system. This reference is human readable.
+        example: 2020-6807
+      quoteStatus:
+        type: string
+        description: Status in the quotation system
+        example: 'Pending, Approved'
+      quoteTotalAmount:
+        type: string
+        example: '123123.9999'
+        description: net value of the quote
+      quoteExpirationDate:
+        type: string
+        format: date-time
+        example: '2020-04-30T08:44:00Z'
+        description: Expiration date of the quote
+      quoteCreatedDate:
+        type: string
+        example: '2020-04-30T08:44:00Z'
+        description: Creation date of the quote
+        format: date-time
+      quoteDescription:
+        type: string
+        example: quote for highway bridge project
+        description: Purpose of the quote. Also known as quote name.
+      quoteCreatedBy:
+        type: string
+        example: Sukumar Saragadam
+        description: Creator of the quote
+      quoteCurrencyCode:
+        type: string
+        description: 'Three character currency code, as defined by ISO 4217.'
+        example: 'EUR, USD'
+      quoteCacheId:
+        type: string
+        description: 1 quote id could be associated to multiple cache id. Cache id could be used to update a quote quicker.
+        example: O1I2U3OI12U3
+  header:
+    type: object
+    title: header
+    description: header of the quote
+    properties:
+      currencyCode:
+        type: string
+        description: |-
+          Currency of the quote.
+
+          Three character currency code, as defined by ISO 4217.
+        example: EUR
+      opportunityId:
+        type: string
+        example: OP-15643-1246a
+        description: If of the originating  bFO opportunity
+      shipTo:
+        $ref: '#/definitions/account'
+      supportRequestId:
+        type: string
+        example: SR-123-4861
+        description: 'ID of the originating bFO support request '
+      customerContact:
+        $ref: '#/definitions/contact'
+      emailRecipients:
+        type: array
+        description: "The list of emails to send the quote to once it's approved."
+        format: email
+        items:
+          type: string
+      sendQuoteByEmail:
+        type: boolean
+        example: true
+        description: Email address of the person the quote was created for
+      quoteTo:
+        $ref: '#/definitions/account'
+      soldTo:
+        $ref: '#/definitions/account'
+      shipToAddress:
+        $ref: '#/definitions/address'
+      caseId:
+        type: string
+        description: bFO case Id
+        example: 012001021QLKJSLDKJ
+      projectName:
+        type: string
+        example: French Railway
+        description: Project Name
+      projectType:
+        type: string
+        description: "could be specific to a country. The consumer shall be onboarded by the quotation team to provide the expected value. For instance, for Norway it's an enumerated value :\n-  \t \tLager / Idrettsbygg\n-  \t \tForretningsbygg\n-  \t \tSkole / Barnehage / SFO\n-  \t \tSykehus / Omsorgsboliger\n-  \t \tBoliger / Senter\n-  \t \tParkering / Garasje anlegg\n-  \t \ttunnel\n-  \t \tPublic\n-  \t \tPrivate\n"
+        example: 'for norway : '
+      salesOrganization:
+        type: string
+        description: Sales Organization is responsible for all the activities or services that happen in the Client or Company.
+        example: PRHAU01
+      orderNumber:
+        type: string
+        example: '0227896123'
+        description: "erp order number of a quote. Could be sales order number of service order number. in both cases it's an ERP order number. Order reference for SE."
+      poNumber:
+        type: string
+        description: purchase order number. Order reference for the customer.
+        example: PO-SE-4827
+      customerComment:
+        type: string
+        description: Comment of the customer
+        example: Blablabla
+      additionalComment:
+        type: string
+        description: Additional comment
+        example: Blablabla
+      billToAddress:
+        $ref: '#/definitions/address'
+    required:
+      - currencyCode
+      - customerContact
+      - soldTo
+  headerUpdate:
+    type: object
+    title: headerUpdate
+    description: header model for update a quote
+    properties:
+      currencyCode:
+        type: string
+        description: |-
+          Currency of the quote.
+
+          Three character currency code, as defined by ISO 4217.
+        example: EUR
+      opportunityId:
+        type: string
+        example: OP-15643-1246a
+        description: If of the originating  bFO opportunity
+      shipTo:
+        $ref: '#/definitions/account'
+      supportRequestId:
+        type: string
+        example: SR-123-4861
+        description: 'ID of the originating bFO support request '
+      customerContact:
+        $ref: '#/definitions/contact'
+      emailRecipients:
+        type: array
+        description: "The list of emails to send the quote to once it's approved."
+        format: email
+        items:
+          type: string
+      sendQuoteByEmail:
+        type: boolean
+        example: true
+        description: Email address of the person the quote was created for
+      quoteTo:
+        $ref: '#/definitions/account'
+      soldTo:
+        $ref: '#/definitions/account'
+      shipToAddress:
+        $ref: '#/definitions/address'
+      caseId:
+        type: string
+        description: bFO case Id
+        example: 012001021QLKJSLDKJ
+      projectName:
+        type: string
+        example: French Railway
+      projectType:
+        type: string
+        description: "could be specific to a country. The consumer shall be onboarded by the quotation team to provide the expected value. For instance, for Norway it's an enumerated value :\n-  \t \tLager / Idrettsbygg\n-  \t \tForretningsbygg\n-  \t \tSkole / Barnehage / SFO\n-  \t \tSykehus / Omsorgsboliger\n-  \t \tBoliger / Senter\n-  \t \tParkering / Garasje anlegg\n-  \t \ttunnel\n-  \t \tPublic\n-  \t \tPrivate\n"
+        example: 'for norway : '
+      salesOrganization:
+        type: string
+        description: Sales Organization is responsible for all the activities or services that happen in the Client or Company.
+        example: PRHAU01
+      orderNumber:
+        type: string
+        example: '0227896123'
+        description: "erp order number of a quote. Could be sales order number of service order number. in both cases it's an ERP order number. Order reference for SE."
+      poNumber:
+        type: string
+        description: purchase order number. Order reference for the customer.
+        example: PO-SE-4827
+      customerComment:
+        type: string
+        example: 'Please, grant additional 10% discount'
+        description: Customer request message to the sales rep
+      additionalComment:
+        type: string
+        description: Additional note of the customer to the sales rep
+        example: This is for government project/education.
+      quoteDescription:
+        type: string
+        description: description provided by the customer.
+        example: My Quote BLABLABLA
+    required:
+      - soldTo
+  account:
+    type: object
+    title: account
+    description: 'Designates an account that could be of different kind : quote to account, sold to account, ship to account, bill to account.'
+    properties:
+      accountId:
+        type: string
+        description: Technical Id of the account in the consumer system.
+        example: '121238981998'
+      accountName:
+        type: string
+        description: account name (readable value)
+        example: Technip holding benelux b.v
+      accountGoldenId:
+        type: string
+        description: unique reference of an account in the SE account autoritative system.
+        example: '01234676789'
+      countryCode:
+        type: string
+        description: 'Two character country code, as defined by ISO 3166-2.'
+        example: FR
+    required:
+      - accountId
+  quoteCreation:
+    type: object
+    title: quoteCreation
+    description: General container for creating a quote. Mainly composed of a header and quote items.
+    properties:
+      header:
+        $ref: '#/definitions/header'
+      quoteItems:
+        type: array
+        description: list of the quote items to be created.
+        items:
+          $ref: '#/definitions/quoteItem'
+      country:
+        type: string
+        description: country code ISO Alpha-2. This parameter is used for routing the quotation demand the proper underlying system.
+        example: AU
+      businessUnit:
+        type: string
+        example: B_ECOTRA
+        description: business unit code defined in the Scheider Electric hierarchy
+      documents:
+        type: array
+        description: documents attached to the quotation project.
+        items:
+          $ref: '#/definitions/quoteItem/properties/documents/items'
+      quotationSystem:
+        type: string
+        example: QDO
+        description: SystemID of target quotation platform. Please check with IFW Global Support for full list of quotation systems supported in this operation.
+      quoteOwner:
+        type: string
+        example: SESA506864
+        description: The SESA ID of the owner of the quote link in calling system. This owner will be the quote creator by default.
+      systemOpportunityId:
+        type: string
+        example: 006g000000JJ7F5AAL
+        description: The id of the opportunity in the calling system.
+      systemQuoteLinkId:
+        type: string
+        example: a0U0U000004izz3UAA
+        description: The technical quote link id in the calling system
+    required:
+      - header
+      - country
+      - businessUnit
+      - quotationSystem
+  quoteUpdate:
+    type: object
+    title: quoteUpdate
+    description: Update a quote
+    properties:
+      header:
+        $ref: '#/definitions/headerUpdate'
+      quoteItems:
+        type: array
+        description: list of the quote items to be created.
+        items:
+          $ref: '#/definitions/quoteItemUpdate'
+      country:
+        type: string
+        description: country code ISO Alpha-2. This parameter is used for routing the quotation demand the proper underlying system.
+        example: AU
+      businessUnit:
+        type: string
+        example: B_ECOTRA
+        description: business unit code defined in the Scheider Electric hierarchy
+      documents:
+        type: array
+        description: documents attached to the quotation project.
+        items:
+          $ref: '#/definitions/quoteItem/properties/documents/items'
+      quoteOwner:
+        type: string
+        example: SESA506864
+        description: The SESA ID of the owner of the quote link in calling system. This owner will be the quote creator by default.
+      systemOpportunityId:
+        type: string
+        example: 006g000000JJ7F5AAL
+        description: The id of the opportunity in the calling system.
+      systemQuoteLinkId:
+        type: string
+        example: a0U0U000004izz3UAA
+        description: The technical quote link id in the calling system
+      quoteCacheId:
+        type: string
+        default: '-1'
+        description: Reference of your cached quote. Recommended for quicker result.
+  contact:
+    type: object
+    title: contact
+    description: contact that requested the quotation
+    properties:
+      contactName:
+        type: string
+        description: Name of the contact in the consumer system.
+        example: 'Dorian Dinh '
+      emailAddress:
+        type: string
+        format: email
+        example: dorian.dinh@se.com
+        description: email address of the contact
+      role:
+        type: string
+        example: Plant Manager DC Evreux
+        description: Role(s) of the contact
+      account:
+        $ref: '#/definitions/account'
+      phoneNumber:
+        type: string
+        example: '0142504459'
+        description: Phone number
+      contactId:
+        type: string
+        description: Technical Id of the contact in the consumer system.
+        example: '01234676789'
+      contactGoldenId:
+        type: string
+        example: '01234676789'
+        description: Golden Id
+    required:
+      - contactName
+  quoteContribution:
+    type: object
+    title: quoteContribution
+    description: 'a quote contribution that could be '
+    properties:
+      quoteItems:
+        type: array
+        items:
+          $ref: '#/definitions/quoteItem'
+      documents:
+        type: array
+        description: documents attached to the quotation project.
+        items:
+          $ref: '#/definitions/quoteItem/properties/documents/items'
+      sourceInfo:
+        $ref: '#/definitions/sourceInfo'
+      targetInfo:
+        $ref: '#/definitions/targetInfo'
+    required:
+      - quoteItems
+      - sourceInfo
+      - targetInfo
+  configurationInfo:
+    title: configurationInfo
+    type: object
+    description: Success message indicating that configuration/selection has been injected in the target quote
+    properties:
+      configurationId:
+        type: string
+        description: id of the element corresponding to the root of the configuration in the quotation system
+        example: 129830928132-QKSJKSQ-117622
+      configurationNumber:
+        type: string
+        example: '00008'
+        description: configuration readable reference assigned by the quotation tool if need be.
+    required:
+      - configurationId
+  targetInfo:
+    type: object
+    title: targetInfo
+    description: Information specific to target Quotation system
+    properties:
+      quotationSystem:
+        type: string
+        description: SystemID of target quotation platform. Please check with API Owner for full list of quotation systems supported in this operation.
+        example: OracleCPQ
+        default: OracleCPQ
+      properties:
+        type: array
+        description: |-
+          Any target specific information needs to be passed in this array.
+          For example: invocationId for OracleCPQ.
+        items:
+          type: object
+          properties:
+            key:
+              type: string
+              example: invocationId
+              description: Property name specific to target quotation system
+            value:
+              type: string
+              example: '4129359'
+              description: Value of the corresponding key
+    required:
+      - quotationSystem
+  address:
+    description: Resource representing a phyiscal or postal address.
+    title: Address
+    type: object
+    properties:
+      businessName:
+        type: string
+        description: Optional business name.
+        example: Blablabla
+      street:
+        type: string
+        description: Street name or PO box with optional extra address lines separated by end of line characters.
+        example: Rue Letort
+      additionalLine:
+        type: string
+        description: 'Optional address line to describe a suite, unit, floor number or named district within a city.'
+        example: '5ième Etage, Bâtiment BC'
+      city:
+        type: string
+        description: Optional city or town name.
+        example: Paris
+      state:
+        type: string
+        description: |-
+          Optional state, province or region code.
+
+          An unrecognised code may result in a validation error or be handled as the full name.
+        example: Ile de France
+      zipcode:
+        type: string
+        description: Optional zip code or postal code. Required in some countries.
+        example: '75018'
+      country:
+        type: string
+        description: 'Two character country code, as defined by ISO 3166-2.'
+        example: FR
+      language:
+        type: string
+        description: |-
+          Language code, as defined by ISO 639-1.
+
+          An unrecognized code may result in a validation error or default to "en" (English).
+        default: en
+      addressLine1:
+        type: string
+        description: |
+          free text
+        example: 33 Lane 1
+      addressLine2:
+        type: string
+        description: free text
+        example: 'Street #23, Nicolas Way'
+    required:
+      - street
+      - country
+      - language
+  order:
+    title: orderInfo
+    type: object
+    description: 'Order processing, logistics properties'
+    properties:
+      freightTerms:
+        type: string
+        description: 'Code corresponding to freight terms in CPQ/SAP platform (e.g. DDP, FOB). Commercial terms for shipment.'
+        example: FOB
+      shippingMethod:
+        type: string
+        description: 'Method of shipment (e.g. air, road)'
+        example: air
+      expectedShipDate:
+        type: string
+        format: date-time
+        description: Expected date of shipment
+        example: '2020-05-04T10:57:00Z'
+      expectedDeliveryDate:
+        type: string
+        format: date-time
+        description: Expected delivery date at shipping address.
+        example: '2020-05-04T10:57:00Z'
+      orderType:
+        type: string
+        example: 'Standard Order, General Sales Order'
+        description: An order type has a large amount of control information important to order management.
+      deliveryBlock:
+        type: string
+        description: 'Delivery block when applied, blocks the sales order for delivery i.e., delivery cannot be created until the delivery block is removed by the authorized person.'
+        example: '01, 02'
+      shipInstructions:
+        type: string
+        description: 'Shipping instructions are used to instruct and monitor shipping conditions of vendor delivery such as pack size, packaging etc.'
+        example: Please deliver on week days
+      comment:
+        type: string
+        description: Comment from the customer.
+        example: 'Please do not ship on next wednesday, we are closed.'
+      orderNumber:
+        type: string
+        description: Transaction code
+        example: '0221234950'
+      shippingAddress:
+        $ref: '#/definitions/address'
+      shipTo:
+        $ref: '#/definitions/account'
+      poNumber:
+        type: string
+        description: Customer Purchase Order Number
+        pattern: PO-SE-4827
+      poDate:
+        type: string
+        description: Purchase Order date
+        example: '2020-05-04T10:57:00Z'
+        format: date-time
+    required:
+      - poNumber
+tags:
+  - name: ''
+  - name: quote
+  - name: quotation
+  - name: tendering
+schemes:
+  - https
+basePath: /v1/pricing-quote/quote
+consumes:
+  - application/json
+produces:
+  - application/json
+security:
+  - oauth2: []
+  - X-IDMS-Authorization: []
+  - apikey: []
+  - X-Ping-Authorization: []

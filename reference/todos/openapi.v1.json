@@ -76,7 +76,15 @@
             "$ref": "../common/openapi.v1.yaml#/responses/500"
           }
         },
-        "description": "Get Todo"
+        "description": "Get Todo",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "header",
+            "name": "aaaa",
+            "required": true
+          }
+        ]
       },
       "security": [
         {
