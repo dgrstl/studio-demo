@@ -90,8 +90,8 @@ components:
         - Pets
       items:
         $ref: ./models/pet.v1.yaml
-    model_v1:
-      title: model_v1
+    model_v2:
+      title: model_v2
       type: object
       properties:
         id:
