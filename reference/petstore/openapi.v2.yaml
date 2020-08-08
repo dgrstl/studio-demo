@@ -14,14 +14,16 @@ info:
 servers:
   - url: 'http://petstore.swagger.io/v2'
 tags:
-  - name: pets
+  - name: Pets
+  - name: Endpoints
+  - name: Schemas
 paths:
   /pets:
     get:
       summary: List all pets
       operationId: listPets
       tags:
-        - pets
+        - Pets
       parameters:
         - name: limit
           in: query
@@ -52,8 +54,6 @@ paths:
     post:
       summary: Create a pet
       operationId: createPets
-      tags:
-        - pets
       responses:
         '200':
           description: Null response
@@ -64,12 +64,16 @@ paths:
               schema:
                 $ref: ../common/models/error.v1.yaml
       description: Create a pet
+      tags:
+        - Pets
+        - Endpoints
   '/pets/{petId}':
     get:
       summary: Info for a specific pet
       operationId: showPetById
       tags:
-        - pets
+        - Endpoints
+        - Pets
       parameters:
         - name: petId
           in: path
