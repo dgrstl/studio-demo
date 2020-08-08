@@ -4,9 +4,17 @@ info:
   title: Swagger Petstore V2
   license:
     name: MIT
-  description: aaa
+    url: stoplight.io
+  description: This is V2
+  contact:
+    name: Dave Roberts
+    url: stoplight.io
+    email: dr@stoplight.io
+  termsOfService: stoplight.io
 servers:
-  - url: 'http://petstore.swagger.io/v1'
+  - url: 'http://petstore.swagger.io/v2'
+tags:
+  - name: pets
 paths:
   /pets:
     get:
@@ -34,26 +42,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Pets'
-        default:
+        '400':
           description: unexpected error
           content:
             application/json:
               schema:
                 $ref: ../common/models/error.v1.yaml
+      description: GET pets
     post:
       summary: Create a pet
       operationId: createPets
       tags:
         - pets
       responses:
-        '201':
+        '200':
           description: Null response
-        default:
+        '400':
           description: unexpected error
           content:
             application/json:
               schema:
                 $ref: ../common/models/error.v1.yaml
+      description: Create a pet
   '/pets/{petId}':
     get:
       summary: Info for a specific pet
@@ -74,12 +84,15 @@ paths:
             application/json:
               schema:
                 $ref: ./models/pet.v1.yaml
+        '400':
+          description: Bad Request
         default:
           description: unexpected error
           content:
             application/json:
               schema:
                 $ref: ../common/models/error.v1.yaml
+      description: GET a specific pet
 components:
   schemas:
     Pets:
@@ -90,9 +103,10 @@ components:
         - Pets
       items:
         $ref: ./models/pet.v1.yaml
-    model_v2:
+    model_v1:
       title: model_v2
       type: object
       properties:
         id:
           type: string
+      description: Model V2
