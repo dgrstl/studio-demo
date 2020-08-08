@@ -1,0 +1,45 @@
+{
+  "data": {
+    "projectTableOfContents": {
+      "data": {
+        "items": [
+          {
+            "type": "divider",
+            "title": "My APIs"
+          },
+          {
+            "uri": "/reference/petstore/openapi.v1.yaml",
+            "type": "item",
+            "title": "No future!"
+          },
+          {
+            "type": "group",
+            "items": [
+              {
+                "uri": "/reference/petstore/openapi.v1.yaml/paths/~1pets/get",
+                "type": "item",
+                "title": "List all pets"
+              },
+              {
+                "uri": "/reference/petstore/openapi.v1.yaml/paths/~1pets/post",
+                "type": "item",
+                "title": "Create a pet"
+              },
+              {
+                "uri": "/reference/petstore/openapi.v1.yaml/paths/~1pets~1{petId}/get",
+                "type": "item",
+                "title": "Info for a specific pet"
+              },
+              {
+                "uri": "/reference/petstore/openapi.v1.yaml/components/schemas/Pets",
+                "type": "item",
+                "title": "Pets"
+              }
+            ],
+            "title": "pets"
+          }
+        ]
+      }
+    }
+  }
+}

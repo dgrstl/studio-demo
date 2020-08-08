@@ -251,11 +251,51 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "https://sales.stoplight-dev.com/api/nodes.raw/?srn=gh/dgrstl/temp-project/api-poc.1.0.0.yaml/components/schemas/User&mid=72&deref=bundle"
+              "$ref": "./models/todo-full.v1.json"
+            },
+            "examples": {
+              "example-1": {
+                "name": "string",
+                "completeddd": null,
+                "id": 0,
+                "completed_at": null,
+                "created_at": "2019-08-24T14:15:22Z",
+                "updated_at": "2019-08-24T14:15:22Z",
+                "user": {
+                  "name": "string",
+                  "age": 0
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            },
+            "examples": {
+              "example-1": {}
             }
           }
         },
         "operationId": "get-foo"
+      }
+    }
+  },
+  "definitions": {
+    "aaaa": {
+      "title": "aaaa",
+      "types": "object",
+      "property": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "x-examples": {
+        "example-1": {
+          "id": "string"
+        }
       }
     }
   }
